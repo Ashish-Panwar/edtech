@@ -35,23 +35,23 @@ const footerLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-navy relative overflow-hidden">
+    <footer className="bg-deep-blue relative overflow-hidden">
       {/* Decorative gradient */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-gold/3 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-electric/3 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           {/* Brand column */}
           <div className="col-span-2 md:col-span-2">
             <div className="flex items-center gap-2 mb-5">
-              <div className="w-10 h-10 rounded-lg gradient-gold flex items-center justify-center font-heading font-bold text-navy text-lg">
+              <div className="w-10 h-10 rounded-lg gradient-electric flex items-center justify-center font-heading font-bold text-deep-blue text-lg">
                 P
               </div>
               <div>
                 <span className="font-heading font-bold text-xl text-white">
                   Premium
                 </span>
-                <span className="font-heading font-bold text-xl text-gold">
+                <span className="font-heading font-bold text-xl text-electric">
                   {" "}Coaching
                 </span>
               </div>
@@ -66,10 +66,10 @@ export default function Footer() {
                   <a
                     key={social}
                     href={siteConfig.social[social as keyof typeof siteConfig.social]}
-                    className="w-10 h-10 rounded-lg bg-white/10 hover:bg-gold transition-all duration-300 flex items-center justify-center group"
+                    className="w-10 h-10 rounded-lg bg-white/10 hover:bg-electric transition-all duration-300 flex items-center justify-center group"
                     aria-label={social}
                   >
-                    <svg className="w-4 h-4 text-white/70 group-hover:text-navy transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-white/70 group-hover:text-deep-blue transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10c0-5.523-4.477-10-10-10z" />
                     </svg>
                   </a>
@@ -89,7 +89,7 @@ export default function Footer() {
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      className="text-white/50 hover:text-gold text-sm transition-colors duration-200"
+                      className="text-white/50 hover:text-electric text-sm transition-colors duration-200"
                     >
                       {link.label}
                     </a>

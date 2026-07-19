@@ -1,44 +1,44 @@
 @import "tailwindcss";
 
 /* ──────────────────────────────────────────────
-   Premium Coaching — Design Tokens
-   Navy #081B33 | Gold #D4A017 | White #FFFFFF | Background #F6F8FC
+   Premium EdTech — Design Tokens
+   Deep Blue #0D1B2A | Electric Blue #0EA5E9
    ────────────────────────────────────────────── */
 
 :root {
   /* Brand colors */
-  --color-navy: #081B33;
-  --color-navy-light: #0F2A4A;
-  --color-navy-dark: #040E1E;
-  --color-gold: #D4A017;
-  --color-gold-light: #F0C040;
-  --color-gold-dark: #B8860B;
+  --color-deep-blue: #0D1B2A;
+  --color-deep-blue-light: #1A2D4A;
+  --color-deep-blue-dark: #070F1A;
+  --color-electric: #0EA5E9;
+  --color-electric-light: #38BDF8;
+  --color-electric-dark: #0284C7;
   --color-white: #FFFFFF;
-  --color-bg: #F6F8FC;
-  --color-bg-alt: #EDF0F6;
+  --color-bg: #F8FAFC;
+  --color-bg-alt: #F0F4F8;
 
   /* Semantic */
-  --color-text-primary: #081B33;
-  --color-text-secondary: #4A5568;
-  --color-text-muted: #8899AA;
-  --color-text-on-dark: #F6F8FC;
-  --color-text-on-gold: #081B33;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+  --color-text-muted: #94A3B8;
+  --color-text-on-dark: #F8FAFC;
+  --color-text-on-electric: #FFFFFF;
 
   /* States */
   --color-success: #10B981;
   --color-error: #EF4444;
   --color-warning: #F59E0B;
-  --color-info: #3B82F6;
+  --color-info: #0EA5E9;
 
   /* Borders */
   --color-border: #E2E8F0;
-  --color-border-light: #EDF2F7;
+  --color-border-light: #F1F5F9;
 
   /* Shadows */
-  --shadow-card: 0 4px 24px rgba(8, 27, 51, 0.08);
-  --shadow-card-hover: 0 12px 40px rgba(8, 27, 51, 0.14);
-  --shadow-gold: 0 4px 24px rgba(212, 160, 23, 0.25);
-  --shadow-nav: 0 2px 20px rgba(8, 27, 51, 0.06);
+  --shadow-card: 0 4px 24px rgba(13, 27, 42, 0.06);
+  --shadow-card-hover: 0 12px 40px rgba(13, 27, 42, 0.1);
+  --shadow-electric: 0 4px 24px rgba(14, 165, 233, 0.3);
+  --shadow-nav: 0 2px 20px rgba(13, 27, 42, 0.06);
 
   /* Radii */
   --radius-sm: 8px;
@@ -54,15 +54,15 @@
 @theme inline {
   --color-background: var(--color-bg);
   --color-foreground: var(--color-text-primary);
-  --color-navy: #081B33;
-  --color-navy-light: #0F2A4A;
-  --color-navy-dark: #040E1E;
-  --color-gold: #D4A017;
-  --color-gold-light: #F0C040;
-  --color-gold-dark: #B8860B;
-  --color-slate: #4A5568;
-  --color-bg: #F6F8FC;
-  --color-bg-alt: #EDF0F6;
+  --color-deep-blue: #0D1B2A;
+  --color-deep-blue-light: #1A2D4A;
+  --color-deep-blue-dark: #070F1A;
+  --color-electric: #0EA5E9;
+  --color-electric-light: #38BDF8;
+  --color-electric-dark: #0284C7;
+  --color-slate: #475569;
+  --color-bg: #F8FAFC;
+  --color-bg-alt: #F0F4F8;
   --font-heading: "Playfair Display", serif;
   --font-body: "Inter", sans-serif;
   --spacing-section: 120px;
@@ -75,6 +75,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 80px;
 }
 
 body {
@@ -87,8 +88,8 @@ body {
 
 /* Selection */
 ::selection {
-  background-color: var(--color-gold);
-  color: var(--color-navy);
+  background-color: var(--color-electric);
+  color: var(--color-white);
 }
 
 /* Scrollbar */
@@ -107,23 +108,80 @@ body {
 }
 
 /* ──────────────────────────────────────────────
-   Utility Classes
+   Header Gradient Variants
+   Each matches the section it scrolls over
+   Solid top → subtle fade at bottom edge
    ────────────────────────────────────────────── */
 
-.gradient-gold {
-  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-dark) 100%);
+.glass-section-hero {
+  background: linear-gradient(180deg,
+    rgba(13, 27, 42, 0.98) 0%,
+    rgba(13, 27, 42, 0.92) 60%,
+    rgba(13, 27, 42, 0.80) 100%
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.gradient-navy {
-  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-light) 100%);
+.glass-section-light {
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.97) 60%,
+    rgba(255, 255, 255, 0.88) 100%
+  );
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
 }
 
-.gradient-navy-gold {
-  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-light) 50%, var(--color-gold) 100%);
+.glass-section-alt {
+  background: linear-gradient(180deg,
+    rgba(248, 250, 252, 1) 0%,
+    rgba(248, 250, 252, 0.97) 60%,
+    rgba(248, 250, 252, 0.88) 100%
+  );
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
 }
 
-.text-gradient-gold {
-  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
+.glass-section-dark {
+  background: linear-gradient(180deg,
+    rgba(13, 27, 42, 0.98) 0%,
+    rgba(13, 27, 42, 0.95) 60%,
+    rgba(13, 27, 42, 0.85) 100%
+  );
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.glass-scrolled {
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.97) 60%,
+    rgba(255, 255, 255, 0.88) 100%
+  );
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* Utility Classes */
+
+.gradient-electric {
+  background: linear-gradient(135deg, var(--color-electric) 0%, var(--color-electric-dark) 100%);
+}
+
+.gradient-deep-blue {
+  background: linear-gradient(135deg, var(--color-deep-blue) 0%, var(--color-deep-blue-light) 100%);
+}
+
+.gradient-deep-blue-electric {
+  background: linear-gradient(135deg, var(--color-deep-blue) 0%, var(--color-deep-blue-light) 50%, var(--color-electric) 100%);
+}
+
+.text-gradient-electric {
+  background: linear-gradient(135deg, var(--color-electric) 0%, var(--color-electric-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -136,20 +194,6 @@ body {
   background-clip: text;
 }
 
-.glass {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.glass-dark {
-  background: rgba(8, 27, 51, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
 /* Animated counter */
 .number-counter {
   display: inline-block;
@@ -157,7 +201,7 @@ body {
 
 /* Focus styles for accessibility */
 *:focus-visible {
-  outline: 2px solid var(--color-gold);
+  outline: 2px solid var(--color-electric);
   outline-offset: 2px;
   border-radius: 4px;
 }

@@ -1,49 +1,116 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { navLinks, siteConfig } from "@/data/content";
+import { navLinks } from "@/data/content";
 import Button from "@/components/ui/Button";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeTheme, setActiveTheme] = useState("dark");
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const rafRef = useRef(0);
 
+  // Unified scroll handler — detect active section theme
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        setIsScrolled(scrollY > 20);
+
+        // Walk data-theme sections to find which one is behind the header
+        const sections = document.querySelectorAll("[data-theme]");
+        let currentTheme = "dark"; // default to dark (hero covers the top)
+        for (let i = 0; i < sections.length; i++) {
+          const el = sections[i];
+          const rect = el.getBoundingClientRect();
+          // Section is covering the header zone (top 150px of viewport)
+          if (rect.top < 150 && rect.bottom > 0) {
+            currentTheme = el.getAttribute("data-theme") || "dark";
+          }
+        }
+        setActiveTheme(currentTheme);
+        rafRef.current = 0;
+      });
+    };
+
+    // Run once immediately on mount
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
+  // Lock body scroll when mobile menu is open
   useEffect(() => {
-    if (isMobileOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = isMobileOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [isMobileOpen]);
 
+  /* ─── Derived visual state ─── */
+  // When at the very top OR on a dark section, use light text on dark bg
+  const isOnDark = !isScrolled || activeTheme === "dark";
+  const textIsLight = isOnDark;
+
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? "glass shadow-nav" : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="fixed top-0 left-0 right-0 z-50">
+      {/* ── Dark gradient layer (hero/stats) ── */}
+      <div
+        className="absolute inset-0 transition-opacity duration-700 ease-in-out pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(13,27,42,1) 0%, rgba(13,27,42,0.98) 60%, rgba(13,27,42,0.92) 100%)",
+          opacity: textIsLight ? 1 : 0,
+        }}
+      />
+
+      {/* ── Light gradient layer (exam/courses/faculty/results/resources/enquiry) ── */}
+      <div
+        className="absolute inset-0 transition-opacity duration-700 ease-in-out pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.97) 50%, rgba(255,255,255,0.9) 100%)",
+          opacity: textIsLight ? 0 : 1,
+        }}
+      />
+
+      {/* ── Bottom border accent ── */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-[1px] transition-opacity duration-700 ease-in-out"
+        style={{
+          background: textIsLight
+            ? "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)"
+            : "linear-gradient(90deg, transparent, rgba(0,0,0,0.06), transparent)",
+          opacity: isScrolled ? 1 : 0,
+        }}
+      />
+
+      {/* ── Content (above the layers) ── */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <a href="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-lg gradient-gold flex items-center justify-center font-heading font-bold text-navy text-lg transition-transform duration-300 group-hover:scale-105">
+            <div className="w-10 h-10 rounded-lg gradient-electric flex items-center justify-center font-heading font-bold text-deep-blue text-lg transition-transform duration-300 group-hover:scale-105">
               P
             </div>
             <div className="hidden sm:block">
-              <span className="font-heading font-bold text-xl text-navy">
+              <span
+                className={`font-heading font-bold text-xl transition-colors duration-500 ${
+                  textIsLight ? "text-white" : "text-deep-blue"
+                }`}
+              >
                 Premium
               </span>
-              <span className="font-heading font-bold text-xl text-gold">
+              <span
+                className={`font-heading font-bold text-xl transition-colors duration-500 ${
+                  textIsLight ? "text-electric-light" : "text-electric"
+                }`}
+              >
                 {" "}Coaching
               </span>
             </div>
@@ -55,7 +122,11 @@ export default function Header() {
               <a
                 key={link.label}
                 href={link.href}
-                className="relative text-navy/80 hover:text-navy font-medium text-sm transition-colors duration-200 after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-gold after:transition-all after:duration-300 hover:after:w-full"
+                className={`relative transition-all duration-300 font-bold text-sm after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-electric after:transition-all after:duration-300 hover:after:w-full ${
+                  textIsLight
+                    ? "text-white/80 hover:text-white"
+                    : "text-deep-blue/80 hover:text-deep-blue"
+                }`}
               >
                 {link.label}
               </a>
@@ -64,7 +135,11 @@ export default function Header() {
 
           {/* CTA */}
           <div className="hidden lg:block">
-            <Button variant="primary" size="sm" href="#enquire">
+            <Button
+              variant={textIsLight ? "outline" : "primary"}
+              size="sm"
+              href="#enquire"
+            >
               Enquire Now
             </Button>
           </div>
@@ -77,16 +152,26 @@ export default function Header() {
           >
             <div className="w-6 flex flex-col gap-1.5">
               <motion.span
-                animate={isMobileOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
-                className="block h-[2px] bg-navy rounded-full transition-colors"
+                animate={
+                  isMobileOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }
+                }
+                className={`block h-[2px] rounded-full transition-colors duration-500 ${
+                  textIsLight && !isMobileOpen ? "bg-white" : "bg-deep-blue"
+                }`}
               />
               <motion.span
                 animate={isMobileOpen ? { opacity: 0 } : { opacity: 1 }}
-                className="block h-[2px] bg-navy rounded-full"
+                className={`block h-[2px] rounded-full transition-colors duration-500 ${
+                  textIsLight && !isMobileOpen ? "bg-white" : "bg-deep-blue"
+                }`}
               />
               <motion.span
-                animate={isMobileOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
-                className="block h-[2px] bg-navy rounded-full"
+                animate={
+                  isMobileOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }
+                }
+                className={`block h-[2px] rounded-full transition-colors duration-500 ${
+                  textIsLight && !isMobileOpen ? "bg-white" : "bg-deep-blue"
+                }`}
               />
             </div>
           </button>
@@ -109,7 +194,7 @@ export default function Header() {
                   key={link.label}
                   href={link.href}
                   onClick={() => setIsMobileOpen(false)}
-                  className="block text-navy/80 hover:text-navy font-medium text-lg py-2 transition-colors"
+                  className="block text-deep-blue/80 hover:text-deep-blue font-medium text-lg py-2 transition-colors"
                 >
                   {link.label}
                 </a>

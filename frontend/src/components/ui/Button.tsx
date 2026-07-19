@@ -33,11 +33,11 @@ export default function Button({
 
   const variants: Record<string, string> = {
     primary:
-      "gradient-gold text-navy font-semibold hover:shadow-gold hover:scale-[1.02] active:scale-[0.98]",
+      "gradient-electric text-deep-blue font-semibold hover:shadow-electric hover:scale-[1.02] active:scale-[0.98]",
     secondary:
-      "bg-navy text-white hover:bg-navy-light hover:shadow-lg active:scale-[0.98]",
+      "bg-deep-blue text-white hover:bg-deep-blue-light hover:shadow-lg active:scale-[0.98]",
     outline:
-      "border-2 border-gold text-gold hover:bg-gold hover:text-navy active:scale-[0.98]",
+      "border-2 border-electric text-electric hover:bg-electric hover:text-white active:scale-[0.98]",
     ghost:
       "text-white/90 hover:text-white hover:bg-white/10 active:scale-[0.98]",
   };

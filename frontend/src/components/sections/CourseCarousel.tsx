@@ -11,7 +11,7 @@ import "swiper/css";
 
 export default function CourseCarousel() {
   return (
-    <section id="courses" className="bg-bg-alt py-section-mobile md:py-section">
+    <section id="courses" data-theme="light" className="bg-bg-alt py-section-mobile md:py-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
           tag="Our Programs"
@@ -43,8 +43,8 @@ export default function CourseCarousel() {
                 className="bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-all duration-500 h-full border border-gray-100 flex flex-col"
               >
                 {/* Card header */}
-                <div className="gradient-navy rounded-t-2xl px-6 py-5">
-                  <span className="text-gold font-semibold text-xs uppercase tracking-widest">
+                <div className="gradient-deep-blue rounded-t-2xl px-6 py-5">
+                  <span className="text-electric font-semibold text-xs uppercase tracking-widest">
                     {course.exam}
                   </span>
                   <h3 className="font-heading text-xl font-bold text-white mt-1">
@@ -74,8 +74,8 @@ export default function CourseCarousel() {
 
                   <ul className="space-y-2.5 mb-6 flex-1">
                     {course.highlights.map((h, i) => (
-                      <li key={i} className="flex items-start gap-2.5 text-sm text-navy/70">
-                        <svg className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <li key={i} className="flex items-start gap-2.5 text-sm text-deep-blue/70">
+                        <svg className="w-4 h-4 text-electric mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
                         {h}

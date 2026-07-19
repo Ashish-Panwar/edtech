@@ -19,7 +19,7 @@ const avatarColors = [
 
 export default function FacultyCarousel() {
   return (
-    <section id="faculty" className="py-section-mobile md:py-section bg-white">
+    <section id="faculty" data-theme="light" className="py-section-mobile md:py-section bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
           tag="Our Faculty"
@@ -58,10 +58,10 @@ export default function FacultyCarousel() {
                     {member.name.charAt(0)}
                   </div>
 
-                  <h3 className="font-heading text-xl font-bold text-navy mb-1">
+                  <h3 className="font-heading text-xl font-bold text-deep-blue mb-1">
                     {member.name}
                   </h3>
-                  <p className="text-gold font-semibold text-sm mb-1">
+                  <p className="text-electric font-semibold text-sm mb-1">
                     {member.subject}
                   </p>
                   <p className="text-slate text-xs mb-4">
@@ -69,10 +69,10 @@ export default function FacultyCarousel() {
                   </p>
 
                   <div className="inline-flex items-center gap-1.5 bg-bg rounded-full px-3.5 py-1 mb-4">
-                    <svg className="w-3.5 h-3.5 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-3.5 h-3.5 text-electric" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span className="text-navy/60 text-xs font-medium">
+                    <span className="text-deep-blue/60 text-xs font-medium">
                       {member.experience} experience
                     </span>
                   </div>

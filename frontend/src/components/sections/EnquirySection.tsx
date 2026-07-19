@@ -23,7 +23,7 @@ export default function EnquirySection() {
 
   if (submitted) {
     return (
-      <section id="enquire" className="py-section-mobile md:py-section bg-white">
+      <section id="enquire" data-theme="light" className="py-section-mobile md:py-section bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -35,7 +35,7 @@ export default function EnquirySection() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h3 className="font-heading text-3xl font-bold text-navy mb-4">
+            <h3 className="font-heading text-3xl font-bold text-deep-blue mb-4">
               Thank You!
             </h3>
             <p className="text-slate text-lg max-w-md mx-auto mb-6">
@@ -64,7 +64,7 @@ export default function EnquirySection() {
   }
 
   return (
-    <section id="enquire" className="py-section-mobile md:py-section bg-white">
+    <section id="enquire" data-theme="light" className="py-section-mobile md:py-section bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left content */}
@@ -116,9 +116,9 @@ export default function EnquirySection() {
                 },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 rounded-xl bg-electric/10 flex items-center justify-center flex-shrink-0">
                     <svg
-                      className="w-6 h-6 text-gold"
+                      className="w-6 h-6 text-electric"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -127,7 +127,7 @@ export default function EnquirySection() {
                     </svg>
                   </div>
                   <div>
-                    <h4 className="font-heading font-bold text-navy">
+                    <h4 className="font-heading font-bold text-deep-blue">
                       {item.title}
                     </h4>
                     <p className="text-slate text-sm">{item.desc}</p>
@@ -148,8 +148,8 @@ export default function EnquirySection() {
           >
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-navy mb-1.5">
-                  Full Name <span className="text-gold">*</span>
+                <label className="block text-sm font-medium text-deep-blue mb-1.5">
+                  Full Name <span className="text-electric">*</span>
                 </label>
                 <input
                   type="text"
@@ -159,13 +159,13 @@ export default function EnquirySection() {
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-navy placeholder:text-slate/50 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-all duration-200"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-deep-blue placeholder:text-slate/50 focus:outline-none focus:ring-2 focus:ring-electric/30 focus:border-electric transition-all duration-200"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-navy mb-1.5">
-                  Phone Number <span className="text-gold">*</span>
+                <label className="block text-sm font-medium text-deep-blue mb-1.5">
+                  Phone Number <span className="text-electric">*</span>
                 </label>
                 <input
                   type="tel"
@@ -175,12 +175,12 @@ export default function EnquirySection() {
                   onChange={(e) =>
                     setFormData({ ...formData, phone: e.target.value })
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-navy placeholder:text-slate/50 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-all duration-200"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-deep-blue placeholder:text-slate/50 focus:outline-none focus:ring-2 focus:ring-electric/30 focus:border-electric transition-all duration-200"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-navy mb-1.5">
+                <label className="block text-sm font-medium text-deep-blue mb-1.5">
                   Email Address
                 </label>
                 <input
@@ -190,13 +190,13 @@ export default function EnquirySection() {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-navy placeholder:text-slate/50 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-all duration-200"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-deep-blue placeholder:text-slate/50 focus:outline-none focus:ring-2 focus:ring-electric/30 focus:border-electric transition-all duration-200"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-navy mb-1.5">
-                  Exam Interested In <span className="text-gold">*</span>
+                <label className="block text-sm font-medium text-deep-blue mb-1.5">
+                  Exam Interested In <span className="text-electric">*</span>
                 </label>
                 <select
                   required
@@ -204,7 +204,7 @@ export default function EnquirySection() {
                   onChange={(e) =>
                     setFormData({ ...formData, exam: e.target.value })
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-navy focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-all duration-200"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-deep-blue focus:outline-none focus:ring-2 focus:ring-electric/30 focus:border-electric transition-all duration-200"
                 >
                   <option value="" disabled>
                     Select an exam
@@ -219,7 +219,7 @@ export default function EnquirySection() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-navy mb-1.5">
+                <label className="block text-sm font-medium text-deep-blue mb-1.5">
                   Message
                 </label>
                 <textarea
@@ -229,7 +229,7 @@ export default function EnquirySection() {
                   onChange={(e) =>
                     setFormData({ ...formData, message: e.target.value })
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-navy placeholder:text-slate/50 focus:outline-none focus:ring-2 focus:ring-gold/30 focus:border-gold transition-all duration-200 resize-none"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-deep-blue placeholder:text-slate/50 focus:outline-none focus:ring-2 focus:ring-electric/30 focus:border-electric transition-all duration-200 resize-none"
                 />
               </div>
 

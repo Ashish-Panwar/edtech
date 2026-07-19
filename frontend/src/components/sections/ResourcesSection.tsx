@@ -37,7 +37,7 @@ const resources = [
 
 export default function ResourcesSection() {
   return (
-    <section id="resources" className="py-section-mobile md:py-section bg-white">
+    <section id="resources" data-theme="light" className="py-section-mobile md:py-section bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
           tag="Resources"
@@ -66,16 +66,16 @@ export default function ResourcesSection() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                   </svg>
                 </div>
-                <span className="text-xs font-semibold text-gold uppercase tracking-wider mb-2">
+                <span className="text-xs font-semibold text-electric uppercase tracking-wider mb-2">
                   {resource.category}
                 </span>
-                <h3 className="font-heading font-bold text-navy text-lg mb-2">
+                <h3 className="font-heading font-bold text-deep-blue text-lg mb-2">
                   {resource.title}
                 </h3>
                 <p className="text-slate text-sm leading-relaxed mb-4 flex-1">
                   {resource.description}
                 </p>
-                <span className="inline-flex items-center gap-1.5 text-navy font-semibold text-sm group-hover:gap-2.5 transition-all duration-300">
+                <span className="inline-flex items-center gap-1.5 text-deep-blue font-semibold text-sm group-hover:gap-2.5 transition-all duration-300">
                   Access Now
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />

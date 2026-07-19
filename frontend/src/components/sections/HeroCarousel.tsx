@@ -27,14 +27,14 @@ export default function HeroCarousel() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
+    <section data-theme="dark" className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background gradient overlay */}
-      <div className="absolute inset-0 gradient-navy z-0" />
+      <div className="absolute inset-0 gradient-deep-blue z-0" />
 
       {/* Decorative elements */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gold/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-gold/3 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-electric/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-electric/3 rounded-full blur-3xl" />
         <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-white/3 rounded-full blur-2xl" />
 
         {/* Grid pattern */}
@@ -42,7 +42,7 @@ export default function HeroCarousel() {
           className="absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(212, 160, 23, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 160, 23, 0.3) 1px, transparent 1px)",
+              "linear-gradient(rgba(14, 165, 233, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(14, 165, 233, 0.3) 1px, transparent 1px)",
             backgroundSize: "60px 60px",
           }}
         />
@@ -62,7 +62,7 @@ export default function HeroCarousel() {
           pagination={{
             clickable: true,
             renderBullet: (index, className) =>
-              `<span class="${className} !bg-gold !opacity-40 !w-3 !h-3 [&.swiper-pagination-bullet-active]:!opacity-100 !transition-all !duration-300"></span>`,
+              `<span class="${className} !bg-electric !opacity-40 !w-3 !h-3 [&.swiper-pagination-bullet-active]:!opacity-100 !transition-all !duration-300"></span>`,
           }}
           onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
           onSwiper={(swiper) => {
@@ -85,7 +85,7 @@ export default function HeroCarousel() {
                       }
                       transition={{ duration: 0.6, delay: 0.1 }}
                     >
-                      <span className="inline-block text-gold font-semibold text-sm md:text-base uppercase tracking-[0.25em] mb-6 border border-gold/30 rounded-full px-5 py-2">
+                      <span className="inline-block text-electric font-semibold text-sm md:text-base uppercase tracking-[0.25em] mb-6 border border-electric/30 rounded-full px-5 py-2">
                         {slide.subtitle}
                       </span>
                     </motion.div>
@@ -159,7 +159,7 @@ export default function HeroCarousel() {
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           className="w-5 h-8 border-2 border-white/20 rounded-full flex justify-center pt-2"
         >
-          <div className="w-1 h-2 bg-gold/60 rounded-full" />
+          <div className="w-1 h-2 bg-electric/60 rounded-full" />
         </motion.div>
       </motion.div>
     </section>

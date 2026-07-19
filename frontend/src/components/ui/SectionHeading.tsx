@@ -32,7 +32,7 @@ export default function SectionHeading({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.5 }}
-          className="inline-block text-gold font-semibold text-sm md:text-base uppercase tracking-[0.2em] mb-4"
+          className="inline-block text-electric font-semibold text-sm md:text-base uppercase tracking-[0.2em] mb-4"
         >
           {tag}
         </motion.span>
@@ -43,7 +43,7 @@ export default function SectionHeading({
         viewport={{ once: true, margin: "-50px" }}
         transition={{ duration: 0.6, delay: 0.1 }}
         className={`font-heading text-3xl md:text-4xl lg:text-5xl font-bold leading-tight ${
-          light ? "text-white" : "text-navy"
+          light ? "text-white" : "text-deep-blue"
         }`}
       >
         {title}

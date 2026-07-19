@@ -11,7 +11,7 @@ import "swiper/css/pagination";
 
 export default function SuccessCarousel() {
   return (
-    <section id="results" className="bg-bg-alt py-section-mobile md:py-section">
+    <section id="results" data-theme="light" className="bg-bg-alt py-section-mobile md:py-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
           tag="Success Stories"
@@ -30,7 +30,7 @@ export default function SuccessCarousel() {
           pagination={{
             clickable: true,
             renderBullet: (index, className) =>
-              `<span class="${className} !bg-gold !opacity-40 !w-3 !h-3 [&.swiper-pagination-bullet-active]:!opacity-100 !transition-all !duration-300"></span>`,
+              `<span class="${className} !bg-electric !opacity-40 !w-3 !h-3 [&.swiper-pagination-bullet-active]:!opacity-100 !transition-all !duration-300"></span>`,
           }}
           breakpoints={{
             768: { slidesPerView: 2 },
@@ -48,7 +48,7 @@ export default function SuccessCarousel() {
               >
                 {/* Quote icon */}
                 <svg
-                  className="w-8 h-8 text-gold/30 mb-4"
+                  className="w-8 h-8 text-electric/30 mb-4"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -56,7 +56,7 @@ export default function SuccessCarousel() {
                 </svg>
 
                 {/* Quote */}
-                <p className="text-navy/75 text-sm md:text-base leading-relaxed mb-6 italic">
+                <p className="text-deep-blue/75 text-sm md:text-base leading-relaxed mb-6 italic">
                   &ldquo;{story.quote}&rdquo;
                 </p>
 
@@ -66,11 +66,11 @@ export default function SuccessCarousel() {
                     {story.name.split(" ").map(n => n[0]).join("")}
                   </div>
                   <div>
-                    <h4 className="font-heading font-bold text-navy text-lg">
+                    <h4 className="font-heading font-bold text-deep-blue text-lg">
                       {story.name}
                     </h4>
                     <div className="flex items-center gap-2">
-                      <span className="text-gold font-semibold text-sm">
+                      <span className="text-electric font-semibold text-sm">
                         {story.rank}
                       </span>
                       <span className="text-slate text-xs">•</span>

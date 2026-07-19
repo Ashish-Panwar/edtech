@@ -24,7 +24,7 @@ function AnimatedCounter({
   return (
     <span className="number-counter font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white tabular-nums">
       {formatted}
-      <span className="text-gold">{suffix}</span>
+      <span className="text-electric">{suffix}</span>
     </span>
   );
 }
@@ -34,11 +34,11 @@ export default function StatsSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="gradient-navy relative overflow-hidden">
+    <section ref={ref} data-theme="dark" className="gradient-deep-blue relative overflow-hidden">
       {/* Decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-gold/3 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-electric/5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-electric/3 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-section-mobile md:py-section">
