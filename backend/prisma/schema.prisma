@@ -1,0 +1,144 @@
+// This is your Prisma schema file
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Lead (Student Enquiry) ───
+model Lead {
+  id            String   @id @default(uuid()) @db.Uuid
+  name          String   @db.VarChar(100)
+  phone         String   @db.VarChar(20)
+  email         String?  @db.VarChar(255)
+  examInterest  String   @map("exam_interest") @db.VarChar(50)
+  message       String?  @db.Text
+  status        String   @default("new") @db.VarChar(20)
+  source        String   @default("homepage") @db.VarChar(50)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("leads")
+}
+
+// ─── Admin User ───
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @db.VarChar(100)
+  email        String   @unique @db.VarChar(255)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  role         String   @default("admin") @db.VarChar(20)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+// ─── Course ───
+model Course {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String   @db.VarChar(200)
+  slug        String   @unique @db.VarChar(200)
+  exam        String   @db.VarChar(50)
+  description String?  @db.Text
+  duration    String?  @db.VarChar(50)
+  mode        String?  @db.VarChar(50)
+  price       Decimal? @db.Decimal(10, 2)
+  highlights  String[] @db.Text
+  image       String?  @db.VarChar(500)
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("courses")
+}
+
+// ─── Faculty ───
+model Faculty {
+  id            String   @id @default(uuid()) @db.Uuid
+  name          String   @db.VarChar(100)
+  slug          String   @unique @db.VarChar(200)
+  subject       String   @db.VarChar(200)
+  experience    String?  @db.VarChar(50)
+  qualification String?  @db.VarChar(200)
+  bio           String?  @db.Text
+  image         String?  @db.VarChar(500)
+  isActive      Boolean  @default(true) @map("is_active")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("faculty")
+}
+
+// ─── Testimonial (Success Story) ───
+model Testimonial {
+  id          String   @id @default(uuid()) @db.Uuid
+  studentName String   @map("student_name") @db.VarChar(100)
+  exam        String   @db.VarChar(50)
+  rank        String   @db.VarChar(50)
+  year        Int?
+  story       String?  @db.Text
+  quote       String?  @db.Text
+  image       String?  @db.VarChar(500)
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("testimonials")
+}
+
+// ─── Hero Slide ───
+model HeroSlide {
+  id                String   @id @default(uuid()) @db.Uuid
+  title             String   @db.VarChar(200)
+  subtitle          String?  @db.VarChar(200)
+  description       String?  @db.Text
+  ctaPrimaryText    String?  @map("cta_primary_text") @db.VarChar(100)
+  ctaPrimaryHref    String?  @map("cta_primary_href") @db.VarChar(500)
+  ctaSecondaryText  String?  @map("cta_secondary_text") @db.VarChar(100)
+  ctaSecondaryHref  String?  @map("cta_secondary_href") @db.VarChar(500)
+  image             String?  @db.VarChar(500)
+  sortOrder         Int      @default(0) @map("sort_order")
+  isActive          Boolean  @default(true) @map("is_active")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("hero_slides")
+}
+
+// ─── Stat ───
+model Stat {
+  id        String   @id @default(uuid()) @db.Uuid
+  value     Int
+  suffix    String   @db.VarChar(10)
+  label     String   @db.VarChar(100)
+  sortOrder Int      @default(0) @map("sort_order")
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("stats")
+}
+
+// ─── Exam (reference data for exams we cover) ───
+model Exam {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique @db.VarChar(50)
+  fullName    String   @map("full_name") @db.VarChar(200)
+  description String?  @db.Text
+  icon        String?  @db.VarChar(50)
+  href        String?  @db.VarChar(500)
+  gradient    String?  @db.VarChar(100)
+  color       String?  @db.VarChar(50)
+  sortOrder   Int      @default(0) @map("sort_order")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("exams")
+}

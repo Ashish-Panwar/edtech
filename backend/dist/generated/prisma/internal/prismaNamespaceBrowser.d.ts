@@ -1,0 +1,154 @@
+import * as runtime from "@prisma/client/runtime/index-browser";
+export type * from '../models';
+export type * from './prismaNamespace';
+export declare const Decimal: typeof runtime.Decimal;
+export declare const NullTypes: {
+    DbNull: (new (secret: never) => typeof runtime.DbNull);
+    JsonNull: (new (secret: never) => typeof runtime.JsonNull);
+    AnyNull: (new (secret: never) => typeof runtime.AnyNull);
+};
+export declare const DbNull: import("@prisma/client-runtime-utils").DbNullClass;
+export declare const JsonNull: import("@prisma/client-runtime-utils").JsonNullClass;
+export declare const AnyNull: import("@prisma/client-runtime-utils").AnyNullClass;
+export declare const ModelName: {
+    readonly Lead: "Lead";
+    readonly User: "User";
+    readonly Course: "Course";
+    readonly Faculty: "Faculty";
+    readonly Testimonial: "Testimonial";
+    readonly HeroSlide: "HeroSlide";
+    readonly Stat: "Stat";
+    readonly Exam: "Exam";
+};
+export type ModelName = (typeof ModelName)[keyof typeof ModelName];
+export declare const TransactionIsolationLevel: {
+    readonly ReadUncommitted: "ReadUncommitted";
+    readonly ReadCommitted: "ReadCommitted";
+    readonly RepeatableRead: "RepeatableRead";
+    readonly Serializable: "Serializable";
+};
+export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel];
+export declare const LeadScalarFieldEnum: {
+    readonly id: "id";
+    readonly name: "name";
+    readonly phone: "phone";
+    readonly email: "email";
+    readonly examInterest: "examInterest";
+    readonly message: "message";
+    readonly status: "status";
+    readonly source: "source";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type LeadScalarFieldEnum = (typeof LeadScalarFieldEnum)[keyof typeof LeadScalarFieldEnum];
+export declare const UserScalarFieldEnum: {
+    readonly id: "id";
+    readonly name: "name";
+    readonly email: "email";
+    readonly passwordHash: "passwordHash";
+    readonly role: "role";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
+export declare const CourseScalarFieldEnum: {
+    readonly id: "id";
+    readonly title: "title";
+    readonly slug: "slug";
+    readonly exam: "exam";
+    readonly description: "description";
+    readonly duration: "duration";
+    readonly mode: "mode";
+    readonly price: "price";
+    readonly highlights: "highlights";
+    readonly image: "image";
+    readonly isActive: "isActive";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type CourseScalarFieldEnum = (typeof CourseScalarFieldEnum)[keyof typeof CourseScalarFieldEnum];
+export declare const FacultyScalarFieldEnum: {
+    readonly id: "id";
+    readonly name: "name";
+    readonly slug: "slug";
+    readonly subject: "subject";
+    readonly experience: "experience";
+    readonly qualification: "qualification";
+    readonly bio: "bio";
+    readonly image: "image";
+    readonly isActive: "isActive";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type FacultyScalarFieldEnum = (typeof FacultyScalarFieldEnum)[keyof typeof FacultyScalarFieldEnum];
+export declare const TestimonialScalarFieldEnum: {
+    readonly id: "id";
+    readonly studentName: "studentName";
+    readonly exam: "exam";
+    readonly rank: "rank";
+    readonly year: "year";
+    readonly story: "story";
+    readonly quote: "quote";
+    readonly image: "image";
+    readonly isActive: "isActive";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type TestimonialScalarFieldEnum = (typeof TestimonialScalarFieldEnum)[keyof typeof TestimonialScalarFieldEnum];
+export declare const HeroSlideScalarFieldEnum: {
+    readonly id: "id";
+    readonly title: "title";
+    readonly subtitle: "subtitle";
+    readonly description: "description";
+    readonly ctaPrimaryText: "ctaPrimaryText";
+    readonly ctaPrimaryHref: "ctaPrimaryHref";
+    readonly ctaSecondaryText: "ctaSecondaryText";
+    readonly ctaSecondaryHref: "ctaSecondaryHref";
+    readonly image: "image";
+    readonly sortOrder: "sortOrder";
+    readonly isActive: "isActive";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type HeroSlideScalarFieldEnum = (typeof HeroSlideScalarFieldEnum)[keyof typeof HeroSlideScalarFieldEnum];
+export declare const StatScalarFieldEnum: {
+    readonly id: "id";
+    readonly value: "value";
+    readonly suffix: "suffix";
+    readonly label: "label";
+    readonly sortOrder: "sortOrder";
+    readonly isActive: "isActive";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type StatScalarFieldEnum = (typeof StatScalarFieldEnum)[keyof typeof StatScalarFieldEnum];
+export declare const ExamScalarFieldEnum: {
+    readonly id: "id";
+    readonly name: "name";
+    readonly fullName: "fullName";
+    readonly description: "description";
+    readonly icon: "icon";
+    readonly href: "href";
+    readonly gradient: "gradient";
+    readonly color: "color";
+    readonly sortOrder: "sortOrder";
+    readonly isActive: "isActive";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type ExamScalarFieldEnum = (typeof ExamScalarFieldEnum)[keyof typeof ExamScalarFieldEnum];
+export declare const SortOrder: {
+    readonly asc: "asc";
+    readonly desc: "desc";
+};
+export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
+export declare const QueryMode: {
+    readonly default: "default";
+    readonly insensitive: "insensitive";
+};
+export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode];
+export declare const NullsOrder: {
+    readonly first: "first";
+    readonly last: "last";
+};
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder];

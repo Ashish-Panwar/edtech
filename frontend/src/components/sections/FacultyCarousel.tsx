@@ -1,10 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import { motion } from "framer-motion";
-import { faculty } from "@/data/content";
 import SectionHeading from "@/components/ui/SectionHeading";
+import { facultyApi } from "@/lib/api";
 
 import "swiper/css";
 
@@ -18,6 +19,56 @@ const avatarColors = [
 ];
 
 export default function FacultyCarousel() {
+  const [faculty, setFaculty] = useState<Array<any>>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchFaculty = async () => {
+      try {
+        setLoading(true);
+        const data = await facultyApi.getAll();
+        setFaculty(data);
+        setError(null);
+      } catch (err) {
+        console.error("Failed to fetch faculty:", err);
+        setError("Failed to load faculty");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFaculty();
+  }, []);
+
+  if (loading) {
+    return (
+      <section id="faculty" data-theme="light" className="py-section-mobile md:py-section bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            tag="Our Faculty"
+            title="Loading faculty..."
+            subtitle=""
+          />
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="faculty" data-theme="light" className="py-section-mobile md:py-section bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            tag="Our Faculty"
+            title="Error loading faculty"
+            subtitle={error}
+          />
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="faculty" data-theme="light" className="py-section-mobile md:py-section bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -38,7 +89,7 @@ export default function FacultyCarousel() {
           loop
           className="!px-4 sm:!px-6 lg:!px-8"
         >
-          {faculty.map((member, index) => (
+          {faculty.map((member: any, index: number) => (
             <SwiperSlide
               key={member.id}
               className="!w-[300px] md:!w-[350px]"

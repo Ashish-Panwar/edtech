@@ -1,15 +1,66 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import { motion } from "framer-motion";
-import { courses } from "@/data/content";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Button from "@/components/ui/Button";
+import { coursesApi } from "@/lib/api";
 
 import "swiper/css";
 
 export default function CourseCarousel() {
+  const [courses, setCourses] = useState<Array<any>>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
+        const data = await coursesApi.getAll();
+        setCourses(data);
+        setError(null);
+      } catch (err) {
+        console.error("Failed to fetch courses:", err);
+        setError("Failed to load courses");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+  if (loading) {
+    return (
+      <section id="courses" data-theme="light" className="bg-bg-alt py-section-mobile md:py-section">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            tag="Our Programs"
+            title="Loading courses..."
+            subtitle=""
+          />
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="courses" data-theme="light" className="bg-bg-alt py-section-mobile md:py-section">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            tag="Our Programs"
+            title="Error loading courses"
+            subtitle={error}
+          />
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="courses" data-theme="light" className="bg-bg-alt py-section-mobile md:py-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -30,7 +81,7 @@ export default function CourseCarousel() {
           loop
           className="!px-4 sm:!px-6 lg:!px-8"
         >
-          {courses.map((course, index) => (
+          {courses.map((course: any, index: number) => (
             <SwiperSlide
               key={course.id}
               className="!w-[300px] md:!w-[350px] lg:!w-[calc(25%-18px)]"
@@ -73,7 +124,7 @@ export default function CourseCarousel() {
                   </p>
 
                   <ul className="space-y-2.5 mb-6 flex-1">
-                    {course.highlights.map((h, i) => (
+                    {course.highlights.map((h: string, i: number) => (
                       <li key={i} className="flex items-start gap-2.5 text-sm text-deep-blue/70">
                         <svg className="w-4 h-4 text-electric mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />

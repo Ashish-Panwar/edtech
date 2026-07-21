@@ -1,0 +1,8 @@
+INSERT INTO faculty (id, name, slug, subject, experience, qualification, bio, image, is_active, created_at, updated_at)
+VALUES
+(gen_random_uuid(), 'Dr. Arvind Sharma', 'dr-arvind-sharma', 'Political Science & Governance', '22 Years', 'PhD, JNU', 'Former assistant professor at Delhi University. Specializes in Indian Polity and International Relations for UPSC.', NULL, true, NOW(), NOW()),
+(gen_random_uuid(), 'Prof. Meera Iyer', 'prof-meera-iyer', 'Physics', '18 Years', 'M.Sc. IIT Bombay', 'Known for intuitive physics teaching. Her students have consistently ranked in JEE Advanced top 500.', NULL, true, NOW(), NOW()),
+(gen_random_uuid(), 'Dr. Suresh Patel', 'dr-suresh-patel', 'Biology', '20 Years', 'MBBS, AIIMS Delhi', 'Medical professional turned educator. Makes complex biological concepts simple and memorable.', NULL, true, NOW(), NOW()),
+(gen_random_uuid(), 'Ms. Priya Verma', 'ms-priya-verma', 'Quantitative Aptitude', '15 Years', 'IIM Ahmedabad', 'CAT 99.99 percentile scorer. Expert in quantitative aptitude and data interpretation.', NULL, true, NOW(), NOW()),
+(gen_random_uuid(), 'Mr. Rajesh Kumar', 'mr-rajesh-kumar', 'Chemistry', '16 Years', 'Ph.D. IIT Delhi', 'Research scientist turned educator. Known for innovative teaching methods and problem-solving techniques.', NULL, true, NOW(), NOW()),
+(gen_random_uuid(), 'Dr. Ananya Gupta', 'dr-ananya-gupta', 'History & Culture', '14 Years', 'PhD, Oxford University', 'Specializes in Ancient and Medieval Indian history. Makes history come alive through storytelling.', NULL, true, NOW(), NOW());

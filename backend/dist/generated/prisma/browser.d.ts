@@ -1,0 +1,12 @@
+import * as Prisma from './internal/prismaNamespaceBrowser';
+export { Prisma };
+export * as $Enums from './enums';
+export * from './enums';
+export type Lead = Prisma.LeadModel;
+export type User = Prisma.UserModel;
+export type Course = Prisma.CourseModel;
+export type Faculty = Prisma.FacultyModel;
+export type Testimonial = Prisma.TestimonialModel;
+export type HeroSlide = Prisma.HeroSlideModel;
+export type Stat = Prisma.StatModel;
+export type Exam = Prisma.ExamModel;

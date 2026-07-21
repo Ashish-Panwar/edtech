@@ -11,6 +11,7 @@ interface ButtonProps {
   onClick?: () => void;
   className?: string;
   type?: "button" | "submit";
+  disabled?: boolean;
 }
 
 const sizeClasses = {
@@ -27,6 +28,7 @@ export default function Button({
   onClick,
   className = "",
   type = "button",
+  disabled = false,
 }: ButtonProps) {
   const base =
     "inline-flex items-center justify-center font-medium transition-all duration-300 rounded-[30px] cursor-pointer";
@@ -44,13 +46,23 @@ export default function Button({
 
   const classes = `${base} ${sizeClasses[size]} ${variants[variant]} ${className}`;
 
+  // If disabled, we adjust the cursor and opacity, and prevent hover/press effects
+  const disabledStyle = disabled
+    ? "cursor-not-allowed opacity-50"
+    : "";
+
   if (href) {
+    // For links, we can't disable the native behavior, but we can prevent click and style it
+    // However, if there's an href, we treat it as a link and ignore disabled for functionality
+    // but we can still apply disabled styling if needed.
     return (
       <motion.a
         href={href}
-        className={classes}
-        whileHover={{ y: -2 }}
-        whileTap={{ y: 0 }}
+        className={`${classes} ${disabledStyle}`}
+        whileHover={!disabled ? { y: -2 } : undefined}
+        whileTap={!disabled ? { y: 0 } : undefined}
+        // Disable pointer events when disabled
+        style={{ pointerEvents: disabled ? "none" : "all" }}
       >
         {children}
       </motion.a>
@@ -60,10 +72,11 @@ export default function Button({
   return (
     <motion.button
       type={type}
-      onClick={onClick}
-      className={classes}
-      whileHover={{ y: -2 }}
-      whileTap={{ y: 0 }}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
+      className={`${classes} ${disabledStyle}`}
+      whileHover={!disabled ? { y: -2 } : undefined}
+      whileTap={!disabled ? { y: 0 } : undefined}
     >
       {children}
     </motion.button>

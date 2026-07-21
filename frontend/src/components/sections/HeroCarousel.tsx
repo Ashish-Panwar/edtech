@@ -5,8 +5,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade, Pagination } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import { motion } from "framer-motion";
-import { heroSlides } from "@/data/content";
 import Button from "@/components/ui/Button";
+import { heroSlidesApi } from "@/lib/api";
 
 // Swiper CSS
 import "swiper/css";
@@ -16,6 +16,27 @@ import "swiper/css/pagination";
 export default function HeroCarousel() {
   const swiperRef = useRef<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [slides, setSlides] = useState<Array<any>>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchSlides = async () => {
+      try {
+        setLoading(true);
+        const data = await heroSlidesApi.getAll();
+        setSlides(data);
+        setError(null);
+      } catch (err) {
+        console.error("Failed to fetch hero slides:", err);
+        setError("Failed to load slides");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSlides();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -25,6 +46,59 @@ export default function HeroCarousel() {
     }, 6000);
     return () => clearInterval(interval);
   }, []);
+
+  if (loading) {
+    return (
+      <section data-theme="dark" className="relative min-h-screen flex items-center overflow-hidden">
+        <div className="absolute inset-0 gradient-deep-blue z-0" />
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-electric/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-electric/3 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-white/3 rounded-full blur-2xl" />
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(14, 165, 233, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(14, 165, 233, 0.3) 1px, transparent 1px)",
+              backgroundSize: "60px 60px",
+            }}
+          />
+        </div>
+        <div className="relative z-10 w-full flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-white">Loading hero slides...</h2>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section data-theme="dark" className="relative min-h-screen flex items-center overflow-hidden">
+        <div className="absolute inset-0 gradient-deep-blue z-0" />
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-electric/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-electric/3 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-white/3 rounded-full blur-2xl" />
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(14, 165, 233, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(14, 165, 233, 0.3) 1px, transparent 1px)",
+              backgroundSize: "60px 60px",
+            }}
+          />
+        </div>
+        <div className="relative z-10 w-full flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-red-400">Error loading hero slides</h2>
+            <p className="text-white/60 mt-2">{error}</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section data-theme="dark" className="relative min-h-screen flex items-center overflow-hidden">
@@ -70,7 +144,7 @@ export default function HeroCarousel() {
           }}
           className="hero-swiper h-full"
         >
-          {heroSlides.map((slide, index) => (
+          {slides.map((slide: any, index: number) => (
             <SwiperSlide key={slide.id}>
               <div className="min-h-[calc(100vh-80px)] flex items-center px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto w-full pt-24 pb-16">

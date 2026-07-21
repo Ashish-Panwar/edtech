@@ -1,0 +1,5 @@
+INSERT INTO hero_slides (id, title, subtitle, description, cta_primary_text, cta_primary_href, cta_secondary_text, cta_secondary_href, image, sort_order, is_active, created_at, updated_at)
+VALUES
+(gen_random_uuid(), 'Crack Your Dream Exam', 'UPSC | IIT-JEE | NEET | SSC | CAT', 'India''s most comprehensive coaching program with 1000+ successful students. Expert faculty, structured curriculum, and personalized mentorship.', 'Explore Courses', '#courses', 'Book Free Counselling', '#enquire', NULL, 1, true, NOW(), NOW()),
+(gen_random_uuid(), 'Learn from the Best Faculty', '20+ Years of Teaching Excellence', 'Our faculty includes IIT/IIM alumni, PhD scholars, and former examiners. Each mentor brings decades of experience to help you succeed.', 'Meet Our Faculty', '#faculty', 'View Results', '#results', NULL, 2, true, NOW(), NOW()),
+(gen_random_uuid(), 'Proven Track Record of Success', '500+ Ranks in Top 100', 'Year after year, our students achieve outstanding results. Join the ranks of toppers who trusted Premium Coaching Academy for their preparation.', 'Success Stories', '#results', 'Start Your Journey', '#enquire', NULL, 3, true, NOW(), NOW());

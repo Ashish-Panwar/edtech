@@ -1,0 +1,7 @@
+INSERT INTO exams (id, name, full_name, description, icon, href, gradient, color, sort_order, is_active, created_at, updated_at)
+VALUES
+(gen_random_uuid(), 'UPSC', 'Union Public Service Commission', 'Comprehensive coverage of Prelims, Mains, and Interview with current affairs integration.', '🏛️', '/exams/upsc', 'from-amber-600 to-orange-700', '#D4A017', 1, true, NOW(), NOW()),
+(gen_random_uuid(), 'IIT-JEE', 'IIT Joint Entrance Examination', 'Advanced physics, chemistry, and mathematics with problem-solving mastery.', '🔬', '/exams/iit-jee', 'from-blue-600 to-indigo-700', '#2563EB', 2, true, NOW(), NOW()),
+(gen_random_uuid(), 'NEET', 'National Eligibility cum Entrance Test', 'In-depth biology, physics, and chemistry with extensive practice and mock tests.', '⚕️', '/exams/neet', 'from-emerald-600 to-teal-700', '#059669', 3, true, NOW(), NOW()),
+(gen_random_uuid(), 'SSC', 'Staff Selection Commission', 'Complete preparation for SSC CGL, CHSL, and other competitive examinations.', '📋', '/exams/ssc', 'from-purple-600 to-violet-700', '#7C3AED', 4, true, NOW(), NOW()),
+(gen_random_uuid(), 'CAT', 'Common Admission Test', 'Quantitative aptitude, data interpretation, verbal ability, and logical reasoning.', '📊', '/exams/cat', 'from-rose-600 to-pink-700', '#E11D48', 5, true, NOW(), NOW());

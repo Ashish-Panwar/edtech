@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Button from "@/components/ui/Button";
+import { leadsApi } from "@/lib/api";
 
 export default function EnquirySection() {
   const [formData, setFormData] = useState({
@@ -14,11 +15,34 @@ export default function EnquirySection() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In production, send to API
-    setSubmitted(true);
+    setLoading(true);
+    setError(null);
+    try {
+      // Map form data to API format
+      const leadData = {
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email || undefined,
+        examInterest: formData.exam,
+        message: formData.message || undefined,
+      };
+      await leadsApi.create(leadData);
+      setSubmitted(true);
+    } catch (err: any) {
+      console.error("Failed to submit enquiry:", err);
+      setError(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Failed to submit enquiry. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -146,6 +170,11 @@ export default function EnquirySection() {
             transition={{ duration: 0.6 }}
             className="bg-bg rounded-2xl p-8 shadow-card"
           >
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border-l-4 border-red-200 text-red-700">
+                {error}
+              </div>
+            )}
             <div className="space-y-5">
               <div>
                 <label className="block text-sm font-medium text-deep-blue mb-1.5">
@@ -159,7 +188,10 @@ export default function EnquirySection() {
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-deep-blue placeholder:text-slate/50 focus:outline-none focus:ring-2 focus:ring-electric/30 focus:border-electric transition-all duration-200"
+                  className={`w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-deep-blue placeholder:text-slate/50 focus:outline-none focus:ring-2 focus:ring-electric/30 focus:border-electric transition-all duration-200 ${
+                    loading ? "opacity-50" : ""
+                  }`}
+                  disabled={loading}
                 />
               </div>
 
@@ -175,7 +207,10 @@ export default function EnquirySection() {
                   onChange={(e) =>
                     setFormData({ ...formData, phone: e.target.value })
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-deep-blue placeholder:text-slate/50 focus:outline-none focus:ring-2 focus:ring-electric/30 focus:border-electric transition-all duration-200"
+                  className={`w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-deep-blue placeholder:text-slate/50 focus:outline-none focus:ring-2 focus:ring-electric/30 focus:border-electric transition-all duration-200 ${
+                    loading ? "opacity-50" : ""
+                  }`}
+                  disabled={loading}
                 />
               </div>
 
@@ -190,7 +225,10 @@ export default function EnquirySection() {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-deep-blue placeholder:text-slate/50 focus:outline-none focus:ring-2 focus:ring-electric/30 focus:border-electric transition-all duration-200"
+                  className={`w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-deep-blue placeholder:text-slate/50 focus:outline-none focus:ring-2 focus:ring-electric/30 focus:border-electric transition-all duration-200 ${
+                    loading ? "opacity-50" : ""
+                  }`}
+                  disabled={loading}
                 />
               </div>
 
@@ -204,7 +242,10 @@ export default function EnquirySection() {
                   onChange={(e) =>
                     setFormData({ ...formData, exam: e.target.value })
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-deep-blue focus:outline-none focus:ring-2 focus:ring-electric/30 focus:border-electric transition-all duration-200"
+                  className={`w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-deep-blue focus:outline-none focus:ring-2 focus:ring-electric/30 focus:border-electric transition-all duration-200 ${
+                    loading ? "opacity-50" : ""
+                  }`}
+                  disabled={loading}
                 >
                   <option value="" disabled>
                     Select an exam
@@ -229,7 +270,10 @@ export default function EnquirySection() {
                   onChange={(e) =>
                     setFormData({ ...formData, message: e.target.value })
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-deep-blue placeholder:text-slate/50 focus:outline-none focus:ring-2 focus:ring-electric/30 focus:border-electric transition-all duration-200 resize-none"
+                  className={`w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-deep-blue placeholder:text-slate/50 focus:outline-none focus:ring-2 focus:ring-electric/30 focus:border-electric transition-all duration-200 resize-none ${
+                    loading ? "opacity-50" : ""
+                  }`}
+                  disabled={loading}
                 />
               </div>
 
@@ -238,8 +282,9 @@ export default function EnquirySection() {
                 size="lg"
                 type="submit"
                 className="w-full"
+                disabled={loading}
               >
-                Submit Enquiry
+                {loading ? "Submitting..." : "Submit Enquiry"}
               </Button>
 
               <p className="text-xs text-slate/60 text-center">

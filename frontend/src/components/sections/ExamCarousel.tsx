@@ -1,14 +1,65 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import { motion } from "framer-motion";
-import { exams } from "@/data/content";
 import SectionHeading from "@/components/ui/SectionHeading";
+import { examsApi } from "@/lib/api";
 
 import "swiper/css";
 
 export default function ExamCarousel() {
+  const [exams, setExams] = useState<Array<any>>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchExams = async () => {
+      try {
+        setLoading(true);
+        const data = await examsApi.getAll();
+        setExams(data);
+        setError(null);
+      } catch (err) {
+        console.error("Failed to fetch exams:", err);
+        setError("Failed to load exams");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExams();
+  }, []);
+
+  if (loading) {
+    return (
+      <section id="exams" data-theme="light" className="py-section-mobile md:py-section">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            tag="Exams We Cover"
+            title="Loading exams..."
+            subtitle=""
+          />
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section id="exams" data-theme="light" className="py-section-mobile md:py-section">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            tag="Exams We Cover"
+            title="Error loading exams"
+            subtitle={error}
+          />
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="exams" data-theme="light" className="py-section-mobile md:py-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -29,7 +80,7 @@ export default function ExamCarousel() {
           loop
           className="!px-4 sm:!px-6 lg:!px-8"
         >
-          {exams.map((exam, index) => (
+          {exams.map((exam: any, index: number) => (
             <SwiperSlide key={exam.id} className="!w-[280px] md:!w-[320px]">
               <motion.a
                 href={exam.href}
