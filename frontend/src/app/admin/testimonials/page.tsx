@@ -2,29 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { testimonialsApi } from '@/lib/api';
+import { testimonialsApi, examsApi } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/lib/auth';
 import { useSearchParams, useRouter } from 'next/navigation';
 import AdminTable from '@/components/ui/AdminTable';
 import Skeleton from '@/components/ui/Skeleton';
+import { SuccessStory } from '@/data/types';
 
 // Types for our testimonials list
-interface Testimonial {
-  id: string;
-  name: string;
-  exam: string;
-  rank: string | number;
-  year: number;
-  story: string;
-  quote: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string | null;
-}
-
 interface TestimonialsListResponse {
-  data: Testimonial[];
+  data: SuccessStory[];
   total: number;
 }
 
@@ -39,7 +27,7 @@ export default function AdminTestimonialsPage() {
   const searchParams = useSearchParams();
 
   // State for testimonials and pagination
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [testimonials, setTestimonials] = useState<SuccessStory[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,9 +52,9 @@ export default function AdminTestimonialsPage() {
         sortOrder,
       });
 
-      let filteredData = response.data;
+      let filteredData = response.data || [];
       if (examFilter) {
-        filteredData = filteredData.filter((t: Testimonial) => t.exam === examFilter);
+        filteredData = filteredData.filter((t: SuccessStory) => t.exam === examFilter);
       }
       // Note: For simplicity, we are using the total from the API (unfiltered) for pagination.
       // In a real app, we would want the API to return the filtered total.
@@ -83,8 +71,8 @@ export default function AdminTestimonialsPage() {
   // Fetch exams for filter dropdown
   const fetchExams = async () => {
     try {
-      const examData = await examsApi.getAll();
-      const examList = examData.data.map((exam: any) => ({
+      const examData = await examsApi.getAll({ limit: 100 }); // Increased limit to ensure we get all exams
+      const examList = (examData.data || []).map((exam: any) => ({
         id: exam.id.toString(),
         name: exam.name,
       }));
@@ -183,13 +171,13 @@ export default function AdminTestimonialsPage() {
   const actions = [
     {
       label: 'Edit',
-      onClick: (testimonial: Testimonial) => {
+      onClick: (testimonial: SuccessStory) => {
         router.push(`/admin/testimonials/${testimonial.id}/edit`);
       },
     },
     {
       label: 'Delete',
-      onClick: (testimonial: Testimonial) => {
+      onClick: (testimonial: SuccessStory) => {
         handleDeleteTestimonial(testimonial.id);
       },
       variant: 'destructive',
@@ -405,7 +393,7 @@ export default function AdminTestimonialsPage() {
       {/* Testimonials Table using AdminTable */}
       <div className="overflow-x-auto">
         <AdminTable
-          testimonials={testimonials}
+          data={testimonials}
           columns={columns}
           actions={actions}
           showCheckbox={false}

@@ -20,6 +20,13 @@ export default function AdminDashboard() {
           </Link>
         </div>
         <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-xl font-semibold mb-4">Testimonials</h2>
+          <p className="text-gray-600">Manage testimonials</p>
+          <Link href="/admin/testimonials" className="mt-4 inline-block text-indigo-600 hover:text-indigo-500">
+            Manage Testimonials →
+          </Link>
+        </div>
+        <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Users</h2>
           <p className="text-gray-600">Manage user accounts</p>
           <Link href="/admin/users" className="mt-4 inline-block text-indigo-600 hover:text-indigo-500">

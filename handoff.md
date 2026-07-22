@@ -42,6 +42,10 @@
   - Create and edit forms with image upload and preview
   - Delete functionality with confirmation
   - Loading states and error handling
+  - **Fixed**: Resolved "Cannot read properties of undefined" errors when loading testimonials
+  - **Fixed**: Resolved "exams is not defined" reference error in edit form reference error in
+  - **Fixed**: Resolved edit form
+  - **Fixed**: Resolved UI update persistence issue where changes weren't saving to database (boolean isActive handling)
 
 #### 4. Endpoint Coverage
 All list endpoints now support pagination and sorting:
@@ -93,6 +97,8 @@ All list endpoints now support pagination and sorting:
 - Swagger UI loads correctly and displays all documented endpoints
 - Environment variables properly loaded via ConfigService
 - Database seeded with initial data for all entities
+- **Fixed**: Testimonials management UI now properly saves updates to database (resolved boolean isActive handling issue)
+- **Fixed**: Resolved runtime errors when loading testimonials lists and edit forms ("Cannot read properties of undefined" and "exams is not defined" errors)
 
 ### 📁 FILES MODIFIED
 - `backend/src/auth/auth.module.ts` - Fixed JWT configuration

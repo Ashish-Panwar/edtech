@@ -377,7 +377,7 @@ export default function AdminFacultyPage() {
       {/* Faculties Table using AdminTable */}
       <div className="overflow-x-auto">
         <AdminTable
-          faculties={faculties}
+          data={faculties}
           columns={columns}
           actions={actions}
           showCheckbox={false}

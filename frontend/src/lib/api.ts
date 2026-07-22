@@ -147,24 +147,27 @@ export const examsApi = {
     if (options?.sortOrder) params.append('sortOrder', options.sortOrder);
 
     const endpoint = `/exams${params.toString() ? `?${params.toString()}` : ''}`;
-    const data = await fetcher<{
-      id: string;
-      name: string;
-      fullName: string;
-      description: string | null;
-      icon: string | null;
-      href: string | null;
-      gradient: string | null;
-      color: string | null;
-      sortOrder: number;
-      isActive: boolean
-    }[]>(endpoint);
+    const response = await fetcher<any>(endpoint);
+
+    // Handle both formats: { data: [], total: number } or just [] (if backend returns array)
+    let examsArray: any[] = [];
+    let total = 0;
+    if (Array.isArray(response)) {
+      examsArray = response;
+      total = response.length;
+    } else if (response && response.data) {
+      examsArray = response.data;
+      total = response.total ?? response.data.length;
+    } else {
+      examsArray = [];
+      total = 0;
+    }
 
     // Transform backend Exam format to frontend Exam format
-    const exams = data.map(exam => ({
+    const exams = examsArray.map(exam => ({
       id: parseInt(exam.id.replace(/-/g, ''), 16) % 1000000,
       name: exam.name,
-      fullName: exam.fullName,
+      fullName: exam.fullName ?? '',
       description: exam.description ?? '',
       icon: exam.icon ?? '',
       href: exam.href ?? '',
@@ -175,7 +178,7 @@ export const examsApi = {
     }));
 
     // Apply client-side pagination
-    const total = exams.length;
+    const totalExams = exams.length;
     const page = options?.page ?? 1;
     const limit = options?.limit ?? 10;
     const startIndex = (page - 1) * limit;
@@ -184,7 +187,7 @@ export const examsApi = {
 
     return {
       data: paginatedData,
-      total,
+      total: totalExams,
     };
   },
 
@@ -675,29 +678,32 @@ export const testimonialsApi = {
     data: SuccessStory[];
     total: number;
   }> => {
-    // Build query parameters for sorting
+    // Build query parameters for sorting and pagination
     const params = new URLSearchParams();
+    if (options?.page) params.append('page', options.page.toString());
+    if (options?.limit) params.append('limit', options.limit.toString());
     if (options?.sortBy) params.append('sortBy', options.sortBy);
     if (options?.sortOrder) params.append('sortOrder', options.sortOrder);
-    // Note: We do not send page and limit to the API because we assume the API
-    // does not support server-side pagination and returns all matching records.
-    // We will handle pagination on the client side.
 
     const endpoint = `/testimonials${params.toString() ? `?${params.toString()}` : ''}`;
-    const data = await fetcher<{
-      id: string;
-      studentName: string;
-      exam: string;
-      rank: string;
-      year: number | null;
-      story: string | null;
-      image: string | null;
-      quote: string | null;
-      isActive: boolean;
-    }[]>(endpoint);
+    const response = await fetcher<any>(endpoint);
 
-    const testimonials = data.map(t => ({
-      id: parseInt(t.id.replace(/-/g, ''), 16) % 1000000,
+    // Handle both formats: { data: [], total: number } or just [] (if backend returns array)
+    let testimonialsArray: any[] = [];
+    let total = 0;
+    if (Array.isArray(response)) {
+      testimonialsArray = response;
+      total = response.length;
+    } else if (response && response.data) {
+      testimonialsArray = response.data;
+      total = response.total ?? response.data.length;
+    } else {
+      testimonialsArray = [];
+      total = 0;
+    }
+
+    const testimonials = testimonialsArray.map(t => ({
+      id: t.id,
       name: t.studentName,
       rank: t.rank,
       exam: t.exam,
@@ -708,16 +714,8 @@ export const testimonialsApi = {
       isActive: t.isActive,
     }));
 
-    // Apply client-side pagination
-    const total = testimonials.length;
-    const page = options?.page ?? 1;
-    const limit = options?.limit ?? 10;
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedData = testimonials.slice(startIndex, endIndex);
-
     return {
-      data: paginatedData,
+      data: testimonials,
       total,
     };
   },
@@ -736,7 +734,7 @@ export const testimonialsApi = {
     }>(`/testimonials/${id}`);
 
     return {
-      id: parseInt(data.id.replace(/-/g, ''), 16) % 1000000,
+      id: data.id,
       name: data.studentName,
       rank: data.rank,
       exam: data.exam,
@@ -782,7 +780,7 @@ export const testimonialsApi = {
     });
 
     return {
-      id: parseInt(response.id.replace(/-/g, ''), 16) % 1000000,
+      id: response.id,
       name: response.studentName,
       rank: response.rank,
       exam: response.exam,
@@ -804,7 +802,7 @@ export const testimonialsApi = {
     if (data.year !== undefined) formData.append('year', data.year ? data.year.toString() : '');
     if (data.story !== undefined) formData.append('story', data.story);
     if (data.quote !== undefined) formData.append('quote', data.quote);
-    if (data.isActive !== undefined) formData.append('isActive', data.isActive ? 'true' : 'false');
+    if (data.isActive !== undefined) formData.append('isActive', data.isActive);
 
     if (data.image && data.image instanceof File) {
       formData.append('image', data.image);
@@ -828,7 +826,7 @@ export const testimonialsApi = {
     });
 
     return {
-      id: parseInt(response.id.replace(/-/g, ''), 16) % 1000000,
+      id: response.id,
       name: response.studentName,
       rank: response.rank,
       exam: response.exam,
@@ -1149,7 +1147,7 @@ export const heroSlidesApi = {
     if (data.ctaSecondary?.text !== undefined) formData.append('ctaSecondaryText', data.ctaSecondary.text);
     if (data.ctaSecondary?.href !== undefined) formData.append('ctaSecondaryHref', data.ctaSecondary.href);
     if (data.sortOrder !== undefined) formData.append('sortOrder', data.sortOrder.toString());
-    if (data.isActive !== undefined) formData.append('isActive', data.isActive ? 'true' : 'false');
+    if (data.isActive !== undefined) formData.append('isActive', data.isActive);
 
     if (data.image && data.image instanceof File) {
       formData.append('image', data.image);

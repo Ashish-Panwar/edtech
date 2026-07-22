@@ -13,6 +13,7 @@ export default function EditTestimonialPage() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [examLoading, setExamLoading] = useState(true);
+  const [exams, setExams] = useState<{ id: string; name: string }[]>([]);
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -58,7 +59,7 @@ export default function EditTestimonialPage() {
     try {
       setExamLoading(true);
       const examData = await examsApi.getAll();
-      const examList = examData.data.map((exam: any) => ({
+      const examList = (examData.data || []).map((exam: any) => ({
         id: exam.id.toString(),
         name: exam.name,
       }));

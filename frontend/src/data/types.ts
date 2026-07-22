@@ -41,7 +41,7 @@ export interface Faculty {
 }
 
 export interface SuccessStory {
-  id: number;
+  id: string;
   name: string;
   rank: string;
   exam: string;
@@ -49,6 +49,7 @@ export interface SuccessStory {
   story: string;
   image: string;
   quote: string;
+  isActive: boolean;
 }
 
 export interface Stat {

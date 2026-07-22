@@ -49,6 +49,9 @@
 25. **Verified Full Stack Integration**: Confirmed frontend is running and backend APIs are responding correctly
 26. **Built Admin Faculty Management**: Created faculty list with pagination, sorting, filtering; create and edit forms with image upload; delete functionality; loading states and error handling.
 27. **Built Admin Testimonials Management**: Created testimonials list with pagination, sorting; create and edit forms with image upload; delete functionality; loading states and error handling.
+28. **Fixed Testimonials List Loading Errors**: Resolved "Cannot read properties of undefined (reading 'map')" errors when loading testimonials lists by adding null checks for API response data
+29. **Fixed Testimonials Edit Form Error**: Resolved "exams is not defined" reference error in testimonials edit form by adding missing state declaration for exams variable
+30. **Fixed Testimonials Update Persistence**: Resolved UI update issue where changes weren't saving to database by correcting boolean isActive handling in FormData submission to match other file-upload endpoints
 
 ### Current Status:
 - **Backend**: Running successfully on port 4001 with JWT authentication working
@@ -128,5 +131,8 @@
 - Database seeded with initial data for all entities visible via GET endpoints
 - Faculty management CRUD operations functional with pagination, sorting, filtering, and image upload
 - Testimonials management CRUD operations functional with pagination, sorting, and image upload
+- Testimonials listing now works without "Cannot read properties of undefined" errors
+- Testimonials edit form loads without "exams is not defined" reference errors
+- Testimonial updates properly persist to database including boolean isActive field changes
 
 This confirms that the Phase‑2 foundation features (file upload, validation, rate limiting, API documentation, frontend auth integration) are now complete and ready for the next stage of UI polishing and admin panel development.
