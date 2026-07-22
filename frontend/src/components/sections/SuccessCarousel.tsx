@@ -18,8 +18,8 @@ export default function SuccessCarousel() {
     const fetchTestimonials = async () => {
       try {
         setLoading(true);
-        const data = await testimonialsApi.getAll();
-        setTestimonials(data);
+        const { data: testimonialsData } = await testimonialsApi.getAll();
+        setTestimonials(testimonialsData);
         setError(null);
       } catch (err) {
         console.error("Failed to fetch testimonials:", err);

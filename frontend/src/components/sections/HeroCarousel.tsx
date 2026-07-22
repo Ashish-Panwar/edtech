@@ -24,8 +24,8 @@ export default function HeroCarousel() {
     const fetchSlides = async () => {
       try {
         setLoading(true);
-        const data = await heroSlidesApi.getAll();
-        setSlides(data);
+        const { data: slidesData } = await heroSlidesApi.getAll();
+        setSlides(slidesData);
         setError(null);
       } catch (err) {
         console.error("Failed to fetch hero slides:", err);

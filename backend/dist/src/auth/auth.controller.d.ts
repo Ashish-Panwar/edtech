@@ -22,4 +22,7 @@ export declare class AuthController {
             role: string;
         };
     }>;
+    logout(): {
+        message: string;
+    };
 }

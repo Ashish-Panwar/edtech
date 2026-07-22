@@ -20,8 +20,30 @@ let HeroSlidesService = class HeroSlidesService {
     create(dto) {
         return this.prisma.heroSlide.create({ data: dto });
     }
-    findAll() {
-        return this.prisma.heroSlide.findMany({ orderBy: { sortOrder: 'asc' } });
+    async findAll(paginationDto) {
+        const { page, limit, sortBy, sortOrder } = paginationDto;
+        const skip = (page - 1) * limit;
+        const orderBy = {};
+        if (sortBy) {
+            orderBy[sortBy] = sortOrder;
+        }
+        else {
+            orderBy['sortOrder'] = 'asc';
+        }
+        const [data, total] = await this.prisma.$transaction([
+            this.prisma.heroSlide.findMany({
+                skip,
+                take: limit,
+                orderBy,
+            }),
+            this.prisma.heroSlide.count(),
+        ]);
+        return {
+            data,
+            total,
+            page,
+            limit,
+        };
     }
     findOne(id) {
         return this.prisma.heroSlide.findUnique({ where: { id } });

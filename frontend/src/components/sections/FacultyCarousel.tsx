@@ -27,8 +27,8 @@ export default function FacultyCarousel() {
     const fetchFaculty = async () => {
       try {
         setLoading(true);
-        const data = await facultyApi.getAll();
-        setFaculty(data);
+        const { data: facultyData } = await facultyApi.getAll();
+        setFaculty(facultyData);
         setError(null);
       } catch (err) {
         console.error("Failed to fetch faculty:", err);

@@ -1,37 +1,43 @@
 import { StatsService } from './stats.service';
 import { CreateStatDto } from './dto/create-stat.dto';
 import { UpdateStatDto } from './dto/update-stat.dto';
+import { PaginationDto } from './dto/pagination.dto';
 export declare class StatsController {
     private readonly service;
     constructor(service: StatsService);
     create(dto: CreateStatDto): import("../../generated/prisma/models").Prisma__StatClient<{
         id: string;
-        sortOrder: number;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
+        isActive: boolean;
+        sortOrder: number;
         value: number;
         suffix: string;
         label: string;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, {
         omit: import("../../generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
-    findAll(): import("../../generated/prisma/internal/prismaNamespace").PrismaPromise<{
-        id: string;
-        sortOrder: number;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-        value: number;
-        suffix: string;
-        label: string;
-    }[]>;
+    findAll(paginationDto: PaginationDto): Promise<{
+        data: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            isActive: boolean;
+            sortOrder: number;
+            value: number;
+            suffix: string;
+            label: string;
+        }[];
+        total: number;
+        page: number;
+        limit: number;
+    }>;
     findOne(id: string): import("../../generated/prisma/models").Prisma__StatClient<{
         id: string;
-        sortOrder: number;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
+        isActive: boolean;
+        sortOrder: number;
         value: number;
         suffix: string;
         label: string;
@@ -40,10 +46,10 @@ export declare class StatsController {
     }>;
     update(id: string, dto: UpdateStatDto): import("../../generated/prisma/models").Prisma__StatClient<{
         id: string;
-        sortOrder: number;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
+        isActive: boolean;
+        sortOrder: number;
         value: number;
         suffix: string;
         label: string;
@@ -52,10 +58,10 @@ export declare class StatsController {
     }>;
     remove(id: string): import("../../generated/prisma/models").Prisma__StatClient<{
         id: string;
-        sortOrder: number;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
+        isActive: boolean;
+        sortOrder: number;
         value: number;
         suffix: string;
         label: string;

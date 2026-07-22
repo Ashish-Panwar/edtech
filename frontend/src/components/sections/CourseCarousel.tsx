@@ -19,8 +19,8 @@ export default function CourseCarousel() {
     const fetchCourses = async () => {
       try {
         setLoading(true);
-        const data = await coursesApi.getAll();
-        setCourses(data);
+        const { data: coursesData } = await coursesApi.getAll();
+        setCourses(coursesData);
         setError(null);
       } catch (err) {
         console.error("Failed to fetch courses:", err);

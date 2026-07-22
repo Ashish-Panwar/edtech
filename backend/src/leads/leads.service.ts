@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateLeadDto } from './dto/create-lead.dto';
 import { UpdateLeadDto } from './dto/update-lead.dto';
+import { PaginationDto } from './dto/pagination.dto';
 
 @Injectable()
 export class LeadsService {
@@ -11,8 +12,35 @@ export class LeadsService {
     return this.prisma.lead.create({ data: dto });
   }
 
-  findAll() {
-    return this.prisma.lead.findMany({ orderBy: { createdAt: 'desc' } });
+  async findAll(paginationDto: PaginationDto) {
+    const { page, limit, sortBy, sortOrder } = paginationDto;
+    const skip = (page - 1) * limit;
+
+    const orderBy = {};
+    if (sortBy) {
+      // @ts-ignore
+      orderBy[sortBy] = sortOrder;
+    } else {
+      // default sort by createdAt descending
+      // @ts-ignore
+      orderBy['createdAt'] = 'desc';
+    }
+
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.lead.findMany({
+        skip,
+        take: limit,
+        orderBy,
+      }),
+      this.prisma.lead.count(),
+    ]);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
   }
 
   findOne(id: string) {

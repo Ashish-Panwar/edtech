@@ -17,6 +17,10 @@ const common_1 = require("@nestjs/common");
 const leads_service_1 = require("./leads.service");
 const create_lead_dto_1 = require("./dto/create-lead.dto");
 const update_lead_dto_1 = require("./dto/update-lead.dto");
+const pagination_dto_1 = require("./dto/pagination.dto");
+const roles_decorator_1 = require("../auth/decorators/roles.decorator");
+const roles_guard_1 = require("../auth/guards/roles.guard");
+const common_2 = require("@nestjs/common");
 let LeadsController = class LeadsController {
     service;
     constructor(service) {
@@ -25,8 +29,8 @@ let LeadsController = class LeadsController {
     create(dto) {
         return this.service.create(dto);
     }
-    findAll() {
-        return this.service.findAll();
+    findAll(paginationDto) {
+        return this.service.findAll(paginationDto);
     }
     findOne(id) {
         return this.service.findOne(id);
@@ -41,6 +45,7 @@ let LeadsController = class LeadsController {
 exports.LeadsController = LeadsController;
 __decorate([
     (0, common_1.Post)(),
+    (0, roles_decorator_1.Roles)('admin'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_lead_dto_1.CreateLeadDto]),
@@ -48,8 +53,9 @@ __decorate([
 ], LeadsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [pagination_dto_1.PaginationDto]),
     __metadata("design:returntype", void 0)
 ], LeadsController.prototype, "findAll", null);
 __decorate([
@@ -61,6 +67,7 @@ __decorate([
 ], LeadsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
+    (0, roles_decorator_1.Roles)('admin'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -69,12 +76,14 @@ __decorate([
 ], LeadsController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
+    (0, roles_decorator_1.Roles)('admin'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], LeadsController.prototype, "remove", null);
 exports.LeadsController = LeadsController = __decorate([
+    (0, common_2.UseGuards)(roles_guard_1.RolesGuard),
     (0, common_1.Controller)('leads'),
     __metadata("design:paramtypes", [leads_service_1.LeadsService])
 ], LeadsController);

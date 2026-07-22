@@ -1,16 +1,17 @@
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTestimonialDto } from './dto/create-testimonial.dto';
 import { UpdateTestimonialDto } from './dto/update-testimonial.dto';
+import { PaginationDto } from './dto/pagination.dto';
 export declare class TestimonialsService {
     private readonly prisma;
     constructor(prisma: PrismaService);
     create(dto: CreateTestimonialDto): import("../../generated/prisma/models").Prisma__TestimonialClient<{
         id: string;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         exam: string;
         image: string | null;
+        isActive: boolean;
         studentName: string;
         rank: string;
         year: number | null;
@@ -19,26 +20,31 @@ export declare class TestimonialsService {
     }, never, import("@prisma/client/runtime/client").DefaultArgs, {
         omit: import("../../generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
-    findAll(): import("../../generated/prisma/internal/prismaNamespace").PrismaPromise<{
-        id: string;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-        exam: string;
-        image: string | null;
-        studentName: string;
-        rank: string;
-        year: number | null;
-        story: string | null;
-        quote: string | null;
-    }[]>;
+    findAll(paginationDto: PaginationDto): Promise<{
+        data: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            exam: string;
+            image: string | null;
+            isActive: boolean;
+            studentName: string;
+            rank: string;
+            year: number | null;
+            story: string | null;
+            quote: string | null;
+        }[];
+        total: number;
+        page: number;
+        limit: number;
+    }>;
     findOne(id: string): import("../../generated/prisma/models").Prisma__TestimonialClient<{
         id: string;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         exam: string;
         image: string | null;
+        isActive: boolean;
         studentName: string;
         rank: string;
         year: number | null;
@@ -49,11 +55,11 @@ export declare class TestimonialsService {
     }>;
     update(id: string, dto: UpdateTestimonialDto): import("../../generated/prisma/models").Prisma__TestimonialClient<{
         id: string;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         exam: string;
         image: string | null;
+        isActive: boolean;
         studentName: string;
         rank: string;
         year: number | null;
@@ -64,11 +70,11 @@ export declare class TestimonialsService {
     }>;
     remove(id: string): import("../../generated/prisma/models").Prisma__TestimonialClient<{
         id: string;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         exam: string;
         image: string | null;
+        isActive: boolean;
         studentName: string;
         rank: string;
         year: number | null;

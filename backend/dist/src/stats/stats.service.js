@@ -20,8 +20,30 @@ let StatsService = class StatsService {
     create(dto) {
         return this.prisma.stat.create({ data: dto });
     }
-    findAll() {
-        return this.prisma.stat.findMany({ orderBy: { sortOrder: 'asc' } });
+    async findAll(paginationDto) {
+        const { page, limit, sortBy, sortOrder } = paginationDto;
+        const skip = (page - 1) * limit;
+        const orderBy = {};
+        if (sortBy) {
+            orderBy[sortBy] = sortOrder;
+        }
+        else {
+            orderBy['sortOrder'] = 'asc';
+        }
+        const [data, total] = await this.prisma.$transaction([
+            this.prisma.stat.findMany({
+                skip,
+                take: limit,
+                orderBy,
+            }),
+            this.prisma.stat.count(),
+        ]);
+        return {
+            data,
+            total,
+            page,
+            limit,
+        };
     }
     findOne(id) {
         return this.prisma.stat.findUnique({ where: { id } });

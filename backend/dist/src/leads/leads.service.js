@@ -20,8 +20,30 @@ let LeadsService = class LeadsService {
     create(dto) {
         return this.prisma.lead.create({ data: dto });
     }
-    findAll() {
-        return this.prisma.lead.findMany({ orderBy: { createdAt: 'desc' } });
+    async findAll(paginationDto) {
+        const { page, limit, sortBy, sortOrder } = paginationDto;
+        const skip = (page - 1) * limit;
+        const orderBy = {};
+        if (sortBy) {
+            orderBy[sortBy] = sortOrder;
+        }
+        else {
+            orderBy['createdAt'] = 'desc';
+        }
+        const [data, total] = await this.prisma.$transaction([
+            this.prisma.lead.findMany({
+                skip,
+                take: limit,
+                orderBy,
+            }),
+            this.prisma.lead.count(),
+        ]);
+        return {
+            data,
+            total,
+            page,
+            limit,
+        };
     }
     findOne(id) {
         return this.prisma.lead.findUnique({ where: { id } });

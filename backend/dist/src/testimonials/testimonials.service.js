@@ -20,8 +20,22 @@ let TestimonialsService = class TestimonialsService {
     create(dto) {
         return this.prisma.testimonial.create({ data: dto });
     }
-    findAll() {
-        return this.prisma.testimonial.findMany();
+    async findAll(paginationDto) {
+        const { page, limit } = paginationDto;
+        const skip = (page - 1) * limit;
+        const [data, total] = await this.prisma.$transaction([
+            this.prisma.testimonial.findMany({
+                skip,
+                take: limit,
+            }),
+            this.prisma.testimonial.count(),
+        ]);
+        return {
+            data,
+            total,
+            page,
+            limit,
+        };
     }
     findOne(id) {
         return this.prisma.testimonial.findUnique({ where: { id } });

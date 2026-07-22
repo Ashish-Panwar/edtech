@@ -18,8 +18,8 @@ export default function ExamCarousel() {
     const fetchExams = async () => {
       try {
         setLoading(true);
-        const data = await examsApi.getAll();
-        setExams(data);
+        const { data: examsData } = await examsApi.getAll();
+        setExams(examsData);
         setError(null);
       } catch (err) {
         console.error("Failed to fetch exams:", err);

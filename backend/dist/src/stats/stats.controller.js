@@ -17,6 +17,11 @@ const common_1 = require("@nestjs/common");
 const stats_service_1 = require("./stats.service");
 const create_stat_dto_1 = require("./dto/create-stat.dto");
 const update_stat_dto_1 = require("./dto/update-stat.dto");
+const pagination_dto_1 = require("./dto/pagination.dto");
+const roles_decorator_1 = require("../auth/decorators/roles.decorator");
+const roles_guard_1 = require("../auth/guards/roles.guard");
+const common_2 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 let StatsController = class StatsController {
     service;
     constructor(service) {
@@ -25,8 +30,8 @@ let StatsController = class StatsController {
     create(dto) {
         return this.service.create(dto);
     }
-    findAll() {
-        return this.service.findAll();
+    findAll(paginationDto) {
+        return this.service.findAll(paginationDto);
     }
     findOne(id) {
         return this.service.findOne(id);
@@ -41,6 +46,7 @@ let StatsController = class StatsController {
 exports.StatsController = StatsController;
 __decorate([
     (0, common_1.Post)(),
+    (0, roles_decorator_1.Roles)('admin'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_stat_dto_1.CreateStatDto]),
@@ -48,8 +54,9 @@ __decorate([
 ], StatsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [pagination_dto_1.PaginationDto]),
     __metadata("design:returntype", void 0)
 ], StatsController.prototype, "findAll", null);
 __decorate([
@@ -61,6 +68,7 @@ __decorate([
 ], StatsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
+    (0, roles_decorator_1.Roles)('admin'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -69,12 +77,16 @@ __decorate([
 ], StatsController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
+    (0, roles_decorator_1.Roles)('admin'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], StatsController.prototype, "remove", null);
 exports.StatsController = StatsController = __decorate([
+    (0, swagger_1.ApiTags)('stats'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_2.UseGuards)(roles_guard_1.RolesGuard),
     (0, common_1.Controller)('stats'),
     __metadata("design:paramtypes", [stats_service_1.StatsService])
 ], StatsController);

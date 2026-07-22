@@ -20,8 +20,30 @@ let FacultyService = class FacultyService {
     create(createFacultyDto) {
         return this.prisma.faculty.create({ data: createFacultyDto });
     }
-    findAll() {
-        return this.prisma.faculty.findMany();
+    async findAll(paginationDto) {
+        const { page, limit, sortBy, sortOrder } = paginationDto;
+        const skip = (page - 1) * limit;
+        const orderBy = {};
+        if (sortBy) {
+            orderBy[sortBy] = sortOrder;
+        }
+        else {
+            orderBy['id'] = 'asc';
+        }
+        const [data, total] = await this.prisma.$transaction([
+            this.prisma.faculty.findMany({
+                skip,
+                take: limit,
+                orderBy,
+            }),
+            this.prisma.faculty.count(),
+        ]);
+        return {
+            data,
+            total,
+            page,
+            limit,
+        };
     }
     findOne(id) {
         return this.prisma.faculty.findUnique({ where: { id } });

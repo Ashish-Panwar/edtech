@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
+import { PaginationDto } from './dto/pagination.dto';
 
 @Injectable()
 export class ExamsService {
@@ -11,8 +12,35 @@ export class ExamsService {
     return this.prisma.exam.create({ data: createExamDto });
   }
 
-  findAll() {
-    return this.prisma.exam.findMany();
+  async findAll(paginationDto: PaginationDto) {
+    const { page, limit, sortBy, sortOrder } = paginationDto;
+    const skip = (page - 1) * limit;
+
+    const orderBy = {};
+    if (sortBy) {
+      // @ts-ignore
+      orderBy[sortBy] = sortOrder;
+    } else {
+      // default sort by id ascending
+      // @ts-ignore
+      orderBy['id'] = 'asc';
+    }
+
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.exam.findMany({
+        skip,
+        take: limit,
+        orderBy,
+      }),
+      this.prisma.exam.count(),
+    ]);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
   }
 
   findOne(id: string) {

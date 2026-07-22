@@ -1,84 +1,90 @@
 import { ExamsService } from './exams.service';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
+import { PaginationDto } from './dto/pagination.dto';
 export declare class ExamsController {
     private readonly examsService;
     constructor(examsService: ExamsService);
     create(createExamDto: CreateExamDto): import("../../generated/prisma/models").Prisma__ExamClient<{
         id: string;
         name: string;
-        fullName: string;
+        createdAt: Date;
+        updatedAt: Date;
         description: string | null;
+        isActive: boolean;
+        sortOrder: number;
+        fullName: string;
         icon: string | null;
         href: string | null;
         gradient: string | null;
         color: string | null;
-        sortOrder: number;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, {
         omit: import("../../generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
-    findAll(): import("../../generated/prisma/internal/prismaNamespace").PrismaPromise<{
-        id: string;
-        name: string;
-        fullName: string;
-        description: string | null;
-        icon: string | null;
-        href: string | null;
-        gradient: string | null;
-        color: string | null;
-        sortOrder: number;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-    }[]>;
+    findAll(paginationDto: PaginationDto): Promise<{
+        data: {
+            id: string;
+            name: string;
+            createdAt: Date;
+            updatedAt: Date;
+            description: string | null;
+            isActive: boolean;
+            sortOrder: number;
+            fullName: string;
+            icon: string | null;
+            href: string | null;
+            gradient: string | null;
+            color: string | null;
+        }[];
+        total: number;
+        page: number;
+        limit: number;
+    }>;
     findOne(id: string): import("../../generated/prisma/models").Prisma__ExamClient<{
         id: string;
         name: string;
-        fullName: string;
+        createdAt: Date;
+        updatedAt: Date;
         description: string | null;
+        isActive: boolean;
+        sortOrder: number;
+        fullName: string;
         icon: string | null;
         href: string | null;
         gradient: string | null;
         color: string | null;
-        sortOrder: number;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
     } | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
         omit: import("../../generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
     update(id: string, updateExamDto: UpdateExamDto): import("../../generated/prisma/models").Prisma__ExamClient<{
         id: string;
         name: string;
-        fullName: string;
+        createdAt: Date;
+        updatedAt: Date;
         description: string | null;
+        isActive: boolean;
+        sortOrder: number;
+        fullName: string;
         icon: string | null;
         href: string | null;
         gradient: string | null;
         color: string | null;
-        sortOrder: number;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, {
         omit: import("../../generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
     remove(id: string): import("../../generated/prisma/models").Prisma__ExamClient<{
         id: string;
         name: string;
-        fullName: string;
+        createdAt: Date;
+        updatedAt: Date;
         description: string | null;
+        isActive: boolean;
+        sortOrder: number;
+        fullName: string;
         icon: string | null;
         href: string | null;
         gradient: string | null;
         color: string | null;
-        sortOrder: number;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, {
         omit: import("../../generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;

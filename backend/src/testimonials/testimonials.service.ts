@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTestimonialDto } from './dto/create-testimonial.dto';
 import { UpdateTestimonialDto } from './dto/update-testimonial.dto';
+import { PaginationDto } from './dto/pagination.dto';
 
 @Injectable()
 export class TestimonialsService {
@@ -11,8 +12,24 @@ export class TestimonialsService {
     return this.prisma.testimonial.create({ data: dto });
   }
 
-  findAll() {
-    return this.prisma.testimonial.findMany();
+  async findAll(paginationDto: PaginationDto) {
+    const { page, limit } = paginationDto;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.testimonial.findMany({
+        skip,
+        take: limit,
+      }),
+      this.prisma.testimonial.count(),
+    ]);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
   }
 
   findOne(id: string) {

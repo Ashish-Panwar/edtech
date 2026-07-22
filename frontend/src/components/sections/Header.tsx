@@ -4,12 +4,14 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { navLinks } from "@/data/content";
 import Button from "@/components/ui/Button";
+import { useAuth } from "@/lib/auth";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeTheme, setActiveTheme] = useState("dark");
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const rafRef = useRef(0);
+  const { user, logout } = useAuth();
 
   // Unified scroll handler — detect active section theme
   useEffect(() => {
@@ -56,6 +58,10 @@ export default function Header() {
   // When at the very top OR on a dark section, use light text on dark bg
   const isOnDark = !isScrolled || activeTheme === "dark";
   const textIsLight = isOnDark;
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
@@ -133,6 +139,46 @@ export default function Header() {
             ))}
           </nav>
 
+          {/* User actions (login/logout) */}
+          <div className="hidden lg:flex items-center gap-4">
+            {user ? (
+              <>
+                <span className={`text-sm font-medium ${
+                  textIsLight ? "text-white" : "text-deep-blue"
+                }`}>
+                  {user.name?.split(" ")[0] || "User"}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className={`text-sm font-medium hover:underline ${
+                    textIsLight ? "text-white" : "text-deep-blue"
+                  }`}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <a
+                  href="/login"
+                  className={`text-sm font-medium hover:underline ${
+                    textIsLight ? "text-white" : "text-deep-blue"
+                  }`}
+                >
+                  Login
+                </a>
+                <a
+                  href="/register"
+                  className={`ml-4 text-sm font-medium bg-transparent hover:bg-white/10 rounded-md px-3 py-1.5 ${
+                    textIsLight ? "text-white" : "text-deep-blue"
+                  } border border-white/20`}
+                >
+                  Register
+                </a>
+              </>
+            )}
+          </div>
+
           {/* CTA */}
           <div className="hidden lg:block">
             <Button
@@ -209,6 +255,37 @@ export default function Header() {
                   Enquire Now
                 </Button>
               </div>
+              {/* Mobile user actions */}
+              {user ? (
+                <>
+                  <div className="mb-4">
+                    <span className="block text-sm font-medium text-deep-blue">
+                      {user.name?.split(" ")[0] || "User"}
+                    </span>
+                    <button
+                      onClick={handleLogout}
+                      className="mt-2 text-sm font-medium underline text-deep-blue hover:no-underline"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <a
+                    href="/login"
+                    className="block mb-2 text-sm font-medium text-deep-blue hover:no-underline"
+                  >
+                    Login
+                  </a>
+                  <a
+                    href="/register"
+                    className="block text-sm font-medium bg-deep-blue hover:bg-deep-blue/80 text-white px-4 py-2 rounded"
+                  >
+                    Register
+                  </a>
+                </>
+              )}
             </nav>
           </motion.div>
         )}

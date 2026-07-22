@@ -40,8 +40,8 @@ export default function StatsSection() {
     const fetchStats = async () => {
       try {
         setLoading(true);
-        const data = await statsApi.getAll();
-        setStats(data);
+        const response = await statsApi.getAll({ limit: 4 });
+        setStats(response.data);
         setError(null);
       } catch (err) {
         console.error("Failed to fetch stats:", err);
