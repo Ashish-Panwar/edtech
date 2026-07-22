@@ -17,7 +17,7 @@ Three-tier architecture:
 | Tier | Technology | Status |
 |------|-----------|--------|
 | 1 — Frontend | Next.js + TypeScript + Tailwind CSS | ✅ Built |
-| 2 — API | Node.js/NestJS (planned) | 📅 Phase 2 |
+| 2 — API | Node.js/NestJS | 🔧 In Progress (Admin auth login redirect fixed) |
 | 3 — Database | PostgreSQL (planned) | 📅 Phase 2 |
 
 ## Frontend Stack
@@ -56,7 +56,7 @@ Three-tier architecture:
 
 ## Phase 2 (Planned)
 
-- Backend API (NestJS)
+- Backend API (NestJS) - **Admin authentication login redirect FIXED** ✅
 - PostgreSQL database
 - Admin authentication
 - Lead tracking system
