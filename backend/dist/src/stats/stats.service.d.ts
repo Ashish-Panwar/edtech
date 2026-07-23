@@ -5,25 +5,25 @@ import { PaginationDto } from './dto/pagination.dto';
 export declare class StatsService {
     private readonly prisma;
     constructor(prisma: PrismaService);
-    create(dto: CreateStatDto): import("../../generated/prisma/models").Prisma__StatClient<{
+    create(dto: CreateStatDto): import("generated/prisma/models").Prisma__StatClient<{
         id: string;
+        sortOrder: number;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        isActive: boolean;
-        sortOrder: number;
         value: number;
         suffix: string;
         label: string;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("../../generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
+        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
     findAll(paginationDto: PaginationDto): Promise<{
         data: {
             id: string;
+            sortOrder: number;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
-            isActive: boolean;
-            sortOrder: number;
             value: number;
             suffix: string;
             label: string;
@@ -32,40 +32,40 @@ export declare class StatsService {
         page: number;
         limit: number;
     }>;
-    findOne(id: string): import("../../generated/prisma/models").Prisma__StatClient<{
+    findOne(id: string): import("generated/prisma/models").Prisma__StatClient<{
         id: string;
+        sortOrder: number;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        isActive: boolean;
-        sortOrder: number;
         value: number;
         suffix: string;
         label: string;
     } | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("../../generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
+        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
-    update(id: string, dto: UpdateStatDto): import("../../generated/prisma/models").Prisma__StatClient<{
+    update(id: string, dto: UpdateStatDto): import("generated/prisma/models").Prisma__StatClient<{
         id: string;
+        sortOrder: number;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        isActive: boolean;
-        sortOrder: number;
         value: number;
         suffix: string;
         label: string;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("../../generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
+        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
-    remove(id: string): import("../../generated/prisma/models").Prisma__StatClient<{
+    remove(id: string): import("generated/prisma/models").Prisma__StatClient<{
         id: string;
+        sortOrder: number;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        isActive: boolean;
-        sortOrder: number;
         value: number;
         suffix: string;
         label: string;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("../../generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
+        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
 }

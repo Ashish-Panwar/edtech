@@ -1,16 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UploadedFile, UseInterceptors, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UploadedFile, UseInterceptors, BadRequestException, Req, UseGuards } from '@nestjs/common';
 import { FacultyService } from './faculty.service';
 import { CreateFacultyDto } from './dto/create-faculty.dto';
 import { UpdateFacultyDto } from './dto/update-faculty.dto';
 import { PaginationDto } from './dto/pagination.dto';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { UseGuards } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { ApiTags, ApiConsumes, ApiBearerAuth } from '@nestjs/swagger';
+import { Request } from 'express';
+type MulterFile = Express.Multer.File;
 
 @ApiTags('faculty')
 @ApiBearerAuth()
@@ -43,12 +44,19 @@ export class FacultyController {
       cb(null, true);
     }
   }))
-  create(@Body() createFacultyDto: CreateFacultyDto, @UploadedFile() image: Express.Multer.File) {
+  create(@Req() request: Request, @UploadedFile() image: MulterFile) {
+    const dto = { ...request.body } as CreateFacultyDto;
     // Add the image filename to the DTO if file was uploaded
     if (image) {
-      createFacultyDto.image = image.filename;
+      dto.image = image.filename;
     }
-    return this.facultyService.create(createFacultyDto);
+    // Ensure boolean fields are properly typed
+    if (dto.isActive !== undefined) {
+      dto.isActive = typeof dto.isActive === 'string'
+        ? dto.isActive === 'true'
+        : !!dto.isActive;
+    }
+    return this.facultyService.create(dto);
   }
 
   @Get()
@@ -65,8 +73,6 @@ export class FacultyController {
   @Roles('admin')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image', {
-    storage: diskStorage({
-      destination: (req, {
     storage: diskStorage({
       destination: (req, file, cb) => {
         const uploadDir = './uploads/faculty';
@@ -87,12 +93,19 @@ export class FacultyController {
       cb(null, true);
     }
   }))
-  update(@Param('id') id: string, @Body() updateFacultyDto: UpdateFacultyDto, @UploadedFile() image: Express.Multer.File) {
+  update(@Param('id') id: string, @Req() request: Request, @UploadedFile() image: MulterFile) {
+    const dto = { ...request.body } as UpdateFacultyDto;
     // Add the image filename to the DTO if file was uploaded
     if (image) {
-      updateFacultyDto.image = image.filename;
+      dto.image = image.filename;
     }
-    return this.facultyService.update(id, updateFacultyDto);
+    // Ensure boolean fields are properly typed
+    if (dto.isActive !== undefined) {
+      dto.isActive = typeof dto.isActive === 'string'
+        ? dto.isActive === 'true'
+        : !!dto.isActive;
+    }
+    return this.facultyService.update(id, dto);
   }
 
   @Delete(':id')

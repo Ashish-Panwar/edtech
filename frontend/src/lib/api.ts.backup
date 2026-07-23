@@ -5,7 +5,7 @@ import {
   Faculty,
   SuccessStory,
   Stat
-} from '@/data/types';
+} from '../data/types';
 
 /**
  * Define types for endpoints that don't have matching frontend types yet
@@ -17,7 +17,6 @@ export interface Lead {
   email?: string;
   examInterest: string;
   message?: string;
-  status?: string;
   source?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -38,36 +37,161 @@ export interface AuthResponse {
  */
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001';
 
+// Loading manager to track API request states
+let activeRequestCount = 0;
+const listeners: Set<(isLoading: boolean) => void> = new Set();
+
+export const loadingManager = {
+  increment: () => {
+    activeRequestCount++;
+    if (activeRequestCount === 1) {
+      listeners.forEach(listener => listener(true));
+    }
+  },
+  decrement: () => {
+    if (activeRequestCount > 0) {
+      activeRequestCount--;
+      if (activeRequestCount === 0) {
+        listeners.forEach(listener => listener(false));
+      }
+    }
+  },
+  subscribe: (listener: (isLoading: boolean) => void) => {
+    listeners.add(listener);
+    // Immediately call with current state
+    listener(activeRequestCount > 0);
+    return () => {
+      listeners.delete(listener);
+    };
+  },
+  isLoading: () => activeRequestCount > 0,
+};
+
+/**
+ * Get token from localStorage
+ */
+const getToken = (): string | null => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('token');
+  }
+  return null;
+};
+
 /**
  * Fetch helper that handles JSON responses and errors
  */
 async function fetcher<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
 
-  const response = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers ?? {}),
-    },
-    ...options,
-  });
+  // Get token and add to headers if present
+  const token = getToken();
+  const headers = new Headers(options.headers ?? {});
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(
-      errorData.message ||
-      `API request failed with status ${response.status}`
-    );
+  // Set Content-Type to application/json only if not sending FormData
+  const isFormData = options.body instanceof FormData;
+  if (!isFormData) {
+    headers.set('Content-Type', 'application/json');
   }
 
-  return response.json();
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  // Notify loading manager of request start
+  loadingManager.increment();
+
+  try {
+    const response = await fetch(url, {
+      headers,
+      ...options,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(
+        errorData.message ||
+        `API request failed with status ${response.status}`
+      );
+    }
+
+    // Handle empty responses (like DELETE)
+    if (response.status === 204) {
+      return {} as T;
+    }
+
+    return response.json();
+  } finally {
+    // Notify loading manager of request end
+    loadingManager.decrement();
+  }
 }
 
 /**
  * Exam-related APIs
  */
 export const examsApi = {
-  getAll: async (): Promise<Exam[]> => {
+  getAll: async (options?: {
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  }): Promise<{
+    data: Exam[];
+    total: number;
+  }> => {
+    // Build query parameters for sorting and pagination
+    const params = new URLSearchParams();
+    if (options?.page) params.append('page', options.page.toString());
+    if (options?.limit) params.append('limit', options.limit.toString());
+    if (options?.sortBy) params.append('sortBy', options.sortBy);
+    if (options?.sortOrder) params.append('sortOrder', options.sortOrder);
+
+    const endpoint = `/exams${params.toString() ? `?${params.toString()}` : ''}`;
+    const response = await fetcher<any>(endpoint);
+
+    // Handle both formats: { data: [], total: number } or just [] (if backend returns array)
+    let examsArray: any[] = [];
+    let total = 0;
+    if (Array.isArray(response)) {
+      examsArray = response;
+      total = response.length;
+    } else if (response && response.data) {
+      examsArray = response.data;
+      total = response.total ?? response.data.length;
+    } else {
+      examsArray = [];
+      total = 0;
+    }
+
+    // Transform backend Exam format to frontend Exam format
+    const exams = examsArray.map(exam => ({
+      id: parseInt(exam.id.replace(/-/g, ''), 16) % 1000000,
+      name: exam.name,
+      fullName: exam.fullName ?? '',
+      description: exam.description ?? '',
+      icon: exam.icon ?? '',
+      href: exam.href ?? '',
+      gradient: exam.gradient ?? '',
+      color: exam.color ?? '',
+      sortOrder: exam.sortOrder,
+      isActive: exam.isActive,
+    }));
+
+    // Apply client-side pagination
+    const totalExams = exams.length;
+    const page = options?.page ?? 1;
+    const limit = options?.limit ?? 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedData = exams.slice(startIndex, endIndex);
+
+    return {
+      data: paginatedData,
+      total: totalExams,
+    };
+  },
+
+  getById: async (id: string): Promise<Exam> => {
     const data = await fetcher<{
       id: string;
       name: string;
@@ -79,19 +203,94 @@ export const examsApi = {
       color: string | null;
       sortOrder: number;
       isActive: boolean
-    }[]>('/exams');
+    }>(`/exams/${id}`);
 
-    // Transform backend Exam format to frontend Exam format
-    return data.map(exam => ({
-      id: parseInt(exam.id.replace(/-/g, ''), 16) % 1000000,
-      name: exam.name,
-      fullName: exam.fullName,
-      description: exam.description ?? '',
-      icon: exam.icon ?? '',
-      href: exam.href ?? '',
-      gradient: exam.gradient ?? '',
-      color: exam.color ?? '',
-    }));
+    return {
+      id: parseInt(id.replace(/-/g, ''), 16) % 1000000,
+      name: data.name,
+      fullName: data.fullName,
+      description: data.description ?? '',
+      icon: data.icon ?? '',
+      href: data.href ?? '',
+      gradient: data.gradient ?? '',
+      color: data.color ?? '',
+      sortOrder: data.sortOrder,
+      isActive: data.isActive,
+    };
+  },
+
+  create: async (data: Omit<Exam, 'id'>): Promise<Exam> => {
+    const response = await fetcher<{
+      id: string;
+      name: string;
+      fullName: string;
+      description: string | null;
+      icon: string | null;
+      href: string | null;
+      gradient: string | null;
+      color: string | null;
+      sortOrder: number;
+      isActive: boolean
+    }>('/exams', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return {
+      id: parseInt(response.id.replace(/-/g, ''), 16) % 1000000,
+      name: response.name,
+      fullName: response.fullName,
+      description: response.description ?? '',
+      icon: response.icon ?? '',
+      href: response.href ?? '',
+      gradient: response.gradient ?? '',
+      color: response.color ?? '',
+      sortOrder: response.sortOrder,
+      isActive: response.isActive,
+    };
+  },
+
+  update: async (id: string, data: Partial<Omit<Exam, 'id'>>): Promise<Exam> => {
+    const response = await fetcher<{
+      id: string;
+      name: string;
+      fullName: string;
+      description: string | null;
+      icon: string | null;
+      href: string | null;
+      gradient: string | null;
+      color: string | null;
+      sortOrder: number;
+      isActive: boolean
+    }>(`/exams/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return {
+      id: parseInt(id.replace(/-/g, ''), 16) % 1000000,
+      name: response.name,
+      fullName: response.fullName,
+      description: response.description ?? '',
+      icon: response.icon ?? '',
+      href: response.href ?? '',
+      gradient: response.gradient ?? '',
+      color: response.color ?? '',
+      sortOrder: response.sortOrder,
+      isActive: response.isActive,
+    };
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await fetcher<void>(`/exams/${id}`, {
+      method: 'DELETE',
+    });
   },
 };
 
@@ -99,7 +298,25 @@ export const examsApi = {
  * Course-related APIs
  */
 export const coursesApi = {
-  getAll: async (): Promise<Course[]> => {
+  getAll: async (options?: {
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+    exam?: string;
+  }): Promise<{
+    data: any[];
+    total: number;
+  }> => {
+    // Build query parameters
+    const params = new URLSearchParams();
+    if (options?.page) params.append('page', options.page.toString());
+    if (options?.limit) params.append('limit', options.limit.toString());
+    if (options?.sortBy) params.append('sortBy', options.sortBy);
+    if (options?.sortOrder) params.append('sortOrder', options.sortOrder);
+    if (options?.exam) params.append('exam', options.exam);
+
+    const endpoint = `/courses${params.toString() ? `?${params.toString()}` : ''}`;
     const data = await fetcher<{
       id: string;
       title: string;
@@ -112,10 +329,14 @@ export const coursesApi = {
       highlights: string[] | null;
       image: string | null;
       isActive: boolean;
-    }[]>('/courses');
+    }[]>(endpoint);
+
+    // We need to get total count from response headers or a separate call
+    // For now, we'll assume the API returns metadata or we'll make a separate count call
+    // In a real implementation, the API would return { data: [...], total: number }
 
     // Transform backend Course format to frontend Course format
-    return data.map(course => ({
+    const transformedData = data.map(course => ({
       id: parseInt(course.id.replace(/-/g, ''), 16) % 1000000,
       title: course.title,
       exam: course.exam,
@@ -124,7 +345,144 @@ export const coursesApi = {
       description: course.description ?? '',
       highlights: course.highlights ?? [],
       href: `/courses/${course.slug}`, // Generate href from slug
+      // Keep raw data for form editing
+      _raw: course
     }));
+
+    return {
+      data: transformedData,
+      total: transformedData.length // This is a placeholder - in real app, API would return total count
+    };
+  },
+
+  getById: async (id: string): Promise<any> => {
+    const data = await fetcher<{
+      id: string;
+      title: string;
+      slug: string;
+      exam: string;
+      description: string | null;
+      duration: string | null;
+      mode: string | null;
+      price: number | null;
+      highlights: string[] | null;
+      image: string | null;
+      isActive: boolean;
+    }>(`/courses/${id}`);
+
+    return {
+      id: parseInt(data.id.replace(/-/g, ''), 16) % 1000000,
+      title: data.title,
+      exam: data.exam,
+      duration: data.duration ?? '',
+      mode: data.mode ?? '',
+      description: data.description ?? '',
+      highlights: data.highlights ?? [],
+      href: `/courses/${data.slug}`,
+      image: data.image,
+      isActive: data.isActive,
+      _raw: data
+    };
+  },
+
+  create: async (data: Omit<Course, 'id' | 'href'> & {
+    image?: File | string;
+  }): Promise<Course> => {
+    const formData = new FormData();
+    formData.append('title', data.title);
+    formData.append('exam', data.exam);
+    formData.append('description', data.description);
+    formData.append('duration', data.duration);
+    formData.append('mode', data.mode);
+    formData.append('price', data.price ? data.price.toString() : '');
+    formData.append('highlights', JSON.stringify(data.highlights));
+
+    if (data.image && data.image instanceof File) {
+      formData.append('image', data.image);
+    } else if (typeof data.image === 'string') {
+      formData.append('image', data.image);
+    }
+
+    const response = await fetcher<{
+      id: string;
+      title: string;
+      slug: string;
+      exam: string;
+      description: string | null;
+      duration: string | null;
+      mode: string | null;
+      price: number | null;
+      highlights: string[] | null;
+      image: string | null;
+      isActive: boolean;
+    }>('/courses', {
+      method: 'POST',
+      body: formData,
+    });
+
+    return {
+      id: parseInt(response.id.replace(/-/g, ''), 16) % 1000000,
+      title: response.title,
+      exam: response.exam,
+      duration: response.duration ?? '',
+      mode: response.mode ?? '',
+      description: response.description ?? '',
+      highlights: response.highlights ?? [],
+      href: `/courses/${response.slug}`,
+    };
+  },
+
+  update: async (id: string, data: Partial<Omit<Course, 'id' | 'href'> & {
+    image?: File | string;
+  }>): Promise<Course> => {
+    const formData = new FormData();
+    if (data.title !== undefined) formData.append('title', data.title);
+    if (data.exam !== undefined) formData.append('exam', data.exam);
+    if (data.description !== undefined) formData.append('description', data.description);
+    if (data.duration !== undefined) formData.append('duration', data.duration);
+    if (data.mode !== undefined) formData.append('mode', data.mode);
+    if (data.price !== undefined) formData.append('price', data.price.toString());
+    if (data.highlights !== undefined) formData.append('highlights', JSON.stringify(data.highlights));
+
+    if (data.image && data.image instanceof File) {
+      formData.append('image', data.image);
+    } else if (typeof data.image === 'string') {
+      formData.append('image', data.image);
+    }
+
+    const response = await fetcher<{
+      id: string;
+      title: string;
+      slug: string;
+      exam: string;
+      description: string | null;
+      duration: string | null;
+      mode: string | null;
+      price: number | null;
+      highlights: string[] | null;
+      image: string | null;
+      isActive: boolean;
+    }>(`/courses/${id}`, {
+      method: 'PATCH',
+      body: formData,
+    });
+
+    return {
+      id: parseInt(response.id.replace(/-/g, ''), 16) % 1000000,
+      title: response.title,
+      exam: response.exam,
+      duration: response.duration ?? '',
+      mode: response.mode ?? '',
+      description: response.description ?? '',
+      highlights: response.highlights ?? [],
+      href: `/courses/${response.slug}`,
+    };
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await fetcher<void>(`/courses/${id}`, {
+      method: 'DELETE',
+    });
   },
 };
 
@@ -132,7 +490,26 @@ export const coursesApi = {
  * Faculty-related APIs
  */
 export const facultyApi = {
-  getAll: async (): Promise<Faculty[]> => {
+  getAll: async (options?: {
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+    subject?: string;
+  }): Promise<{
+    data: Faculty[];
+    total: number;
+  }> => {
+    // Build query parameters for sorting and filtering
+    const params = new URLSearchParams();
+    if (options?.sortBy) params.append('sortBy', options.sortBy);
+    if (options?.sortOrder) params.append('sortOrder', options.sortOrder);
+    if (options?.subject) params.append('subject', options.subject);
+    // Note: We do not send page and limit to the API because we assume the API
+    // does not support server-side pagination and returns all matching records.
+    // We will handle pagination on the client side.
+
+    const endpoint = `/faculty${params.toString() ? `?${params.toString()}` : ''}`;
     const data = await fetcher<{
       id: string;
       name: string;
@@ -143,9 +520,9 @@ export const facultyApi = {
       bio: string | null;
       image: string | null;
       isActive: boolean;
-    }[]>('/faculty');
+    }[]>(endpoint);
 
-    return data.map(fac => ({
+    const faculties = data.map(fac => ({
       id: parseInt(fac.id.replace(/-/g, ''), 16) % 1000000,
       name: fac.name,
       subject: fac.subject,
@@ -153,7 +530,138 @@ export const facultyApi = {
       qualification: fac.qualification ?? '',
       image: fac.image ?? '',
       bio: fac.bio ?? '',
+      isActive: fac.isActive,
     }));
+
+    // Apply client-side pagination
+    const total = faculties.length;
+    const page = options?.page ?? 1;
+    const limit = options?.limit ?? 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedData = faculties.slice(startIndex, endIndex);
+
+    return {
+      data: paginatedData,
+      total,
+    };
+  },
+
+  getById: async (id: string): Promise<Faculty> => {
+    const data = await fetcher<{
+      id: string;
+      name: string;
+      slug: string;
+      subject: string;
+      experience: string | null;
+      qualification: string | null;
+      bio: string | null;
+      image: string | null;
+      isActive: boolean;
+    }>(`/faculty/${id}`);
+
+    return {
+      id: parseInt(data.id.replace(/-/g, ''), 16) % 1000000,
+      name: data.name,
+      subject: data.subject,
+      experience: data.experience ?? '',
+      qualification: data.qualification ?? '',
+      image: data.image ?? '',
+      bio: data.bio ?? '',
+      isActive: data.isActive,
+    };
+  },
+
+  create: async (data: Omit<Faculty, 'id'> & {
+    image?: File | string;
+  }): Promise<Faculty> => {
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('subject', data.subject);
+    formData.append('experience', data.experience);
+    formData.append('qualification', data.qualification);
+    formData.append('bio', data.bio);
+    formData.append('isActive', data.isActive ? 'true' : 'false');
+
+    if (data.image && data.image instanceof File) {
+      formData.append('image', data.image);
+    } else if (typeof data.image === 'string') {
+      formData.append('image', data.image);
+    }
+
+    const response = await fetcher<{
+      id: string;
+      name: string;
+      subject: string;
+      experience: string | null;
+      qualification: string | null;
+      bio: string | null;
+      image: string | null;
+      isActive: boolean;
+    }>('/faculty', {
+      method: 'POST',
+      body: formData,
+    });
+
+    return {
+      id: parseInt(response.id.replace(/-/g, ''), 16) % 1000000,
+      name: response.name,
+      subject: response.subject,
+      experience: response.experience ?? '',
+      qualification: response.qualification ?? '',
+      image: response.image ?? '',
+      bio: response.bio ?? '',
+      isActive: response.isActive,
+    };
+  },
+
+  update: async (id: string, data: Partial<Omit<Faculty, 'id'>> & {
+    image?: File | string;
+  }): Promise<Faculty> => {
+    const formData = new FormData();
+    if (data.name !== undefined) formData.append('name', data.name);
+    if (data.subject !== undefined) formData.append('subject', data.subject);
+    if (data.experience !== undefined) formData.append('experience', data.experience);
+    if (data.qualification !== undefined) formData.append('qualification', data.qualification);
+    if (data.bio !== undefined) formData.append('bio', data.bio);
+    if (data.isActive !== undefined) formData.append('isActive', data.isActive ? 'true' : 'false');
+
+    if (data.image && data.image instanceof File) {
+      formData.append('image', data.image);
+    } else if (typeof data.image === 'string') {
+      formData.append('image', data.image);
+    }
+
+    const response = await fetcher<{
+      id: string;
+      name: string;
+      subject: string;
+      experience: string | null;
+      qualification: string | null;
+      bio: string | null;
+      image: string | null;
+      isActive: boolean;
+    }>(`/faculty/${id}`, {
+      method: 'PATCH',
+      body: formData,
+    });
+
+    return {
+      id: parseInt(response.id.replace(/-/g, ''), 16) % 1000000,
+      name: response.name,
+      subject: response.subject,
+      experience: response.experience ?? '',
+      qualification: response.qualification ?? '',
+      image: response.image ?? '',
+      bio: response.bio ?? '',
+      isActive: response.isActive,
+    };
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await fetcher<void>(`/faculty/${id}`, {
+      method: 'DELETE',
+    });
   },
 };
 
@@ -161,7 +669,58 @@ export const facultyApi = {
  * Testimonials (Success Stories) APIs
  */
 export const testimonialsApi = {
-  getAll: async (): Promise<SuccessStory[]> => {
+  getAll: async (options?: {
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  }): Promise<{
+    data: SuccessStory[];
+    total: number;
+  }> => {
+    // Build query parameters for sorting and pagination
+    const params = new URLSearchParams();
+    if (options?.page) params.append('page', options.page.toString());
+    if (options?.limit) params.append('limit', options.limit.toString());
+    if (options?.sortBy) params.append('sortBy', options.sortBy);
+    if (options?.sortOrder) params.append('sortOrder', options.sortOrder);
+
+    const endpoint = `/testimonials${params.toString() ? `?${params.toString()}` : ''}`;
+    const response = await fetcher<any>(endpoint);
+
+    // Handle both formats: { data: [], total: number } or just [] (if backend returns array)
+    let testimonialsArray: any[] = [];
+    let total = 0;
+    if (Array.isArray(response)) {
+      testimonialsArray = response;
+      total = response.length;
+    } else if (response && response.data) {
+      testimonialsArray = response.data;
+      total = response.total ?? response.data.length;
+    } else {
+      testimonialsArray = [];
+      total = 0;
+    }
+
+    const testimonials = testimonialsArray.map(t => ({
+      id: t.id,
+      name: t.studentName,
+      rank: t.rank,
+      exam: t.exam,
+      year: t.year ?? 0,
+      story: t.story ?? '',
+      image: t.image ?? '',
+      quote: t.quote ?? '',
+      isActive: t.isActive,
+    }));
+
+    return {
+      data: testimonials,
+      total,
+    };
+  },
+
+  getById: async (id: string): Promise<SuccessStory> => {
     const data = await fetcher<{
       id: string;
       studentName: string;
@@ -172,18 +731,117 @@ export const testimonialsApi = {
       image: string | null;
       quote: string | null;
       isActive: boolean;
-    }[]>('/testimonials');
+    }>(`/testimonials/${id}`);
 
-    return data.map(t => ({
-      id: parseInt(t.id.replace(/-/g, ''), 16) % 1000000,
-      name: t.studentName,
-      rank: t.rank,
-      exam: t.exam,
-      year: t.year ?? 0,
-      story: t.story ?? '',
-      image: t.image ?? '',
-      quote: t.quote ?? '',
-    }));
+    return {
+      id: data.id,
+      name: data.studentName,
+      rank: data.rank,
+      exam: data.exam,
+      year: data.year ?? 0,
+      story: data.story ?? '',
+      image: data.image ?? '',
+      quote: data.quote ?? '',
+      isActive: data.isActive,
+    };
+  },
+
+  create: async (data: Omit<SuccessStory, 'id'> & {
+    image?: File | string;
+  }): Promise<SuccessStory> => {
+    const formData = new FormData();
+    formData.append('studentName', data.name);
+    formData.append('exam', data.exam);
+    formData.append('rank', data.rank);
+    if (data.year !== undefined && data.year !== null) formData.append('year', data.year.toString());
+    formData.append('story', data.story);
+    formData.append('quote', data.quote);
+    formData.append('isActive', data.isActive ? 'true' : 'false');
+
+    if (data.image && data.image instanceof File) {
+      formData.append('image', data.image);
+    } else if (typeof data.image === 'string') {
+      formData.append('image', data.image);
+    }
+
+    const response = await fetcher<{
+      id: string;
+      studentName: string;
+      exam: string;
+      rank: string;
+      year: number | null;
+      story: string | null;
+      image: string | null;
+      quote: string | null;
+      isActive: boolean;
+    }>('/testimonials', {
+      method: 'POST',
+      body: formData,
+    });
+
+    return {
+      id: response.id,
+      name: response.studentName,
+      rank: response.rank,
+      exam: response.exam,
+      year: response.year ?? 0,
+      story: response.story ?? '',
+      image: response.image ?? '',
+      quote: response.quote ?? '',
+      isActive: response.isActive,
+    };
+  },
+
+  update: async (id: string, data: Partial<Omit<SuccessStory, 'id'>> & {
+    image?: File | string;
+  }): Promise<SuccessStory> => {
+    const formData = new FormData();
+    if (data.name !== undefined) formData.append('studentName', data.name);
+    if (data.exam !== undefined) formData.append('exam', data.exam);
+    if (data.rank !== undefined) formData.append('rank', data.rank);
+    if (data.year !== undefined && data.year !== null) formData.append('year', data.year.toString());
+    if (data.story !== undefined) formData.append('story', data.story);
+    if (data.quote !== undefined) formData.append('quote', data.quote);
+    if (data.isActive !== undefined) formData.append('isActive', data.isActive ? 'true' : 'false');
+
+    if (data.image && data.image instanceof File) {
+      formData.append('image', data.image);
+    } else if (typeof data.image === 'string') {
+      formData.append('image', data.image);
+    }
+
+    const response = await fetcher<{
+      id: string;
+      studentName: string;
+      exam: string;
+      rank: string;
+      year: number | null;
+      story: string | null;
+      image: string | null;
+      quote: string | null;
+      isActive: boolean;
+    }>(`/testimonials/${id}`, {
+      method: 'PATCH',
+      body: formData,
+    });
+
+    return {
+      id: response.id,
+      name: response.studentName,
+      rank: response.rank,
+      exam: response.exam,
+      year: response.year ?? 0,
+      story: response.story ?? '',
+      image: response.image ?? '',
+      quote: response.quote ?? '',
+      isActive: response.isActive,
+    };
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await fetcher<void>(`/testimonials/${id}`, {
+      method: 'DELETE',
+    });
   },
 };
 
@@ -191,7 +849,23 @@ export const testimonialsApi = {
  * Stats APIs
  */
 export const statsApi = {
-  getAll: async (): Promise<Stat[]> => {
+  getAll: async (options?: {
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  }): Promise<{
+    data: Stat[];
+    total: number;
+  }> => {
+    // Build query parameters for sorting and pagination
+    const params = new URLSearchParams();
+    if (options?.page) params.append('page', options.page.toString());
+    if (options?.limit) params.append('limit', options.limit.toString());
+    if (options?.sortBy) params.append('sortBy', options.sortBy);
+    if (options?.sortOrder) params.append('sortOrder', options.sortOrder);
+
+    const endpoint = `/stats${params.toString() ? `?${params.toString()}` : ''}`;
     const data = await fetcher<{
       id: string;
       value: number | null;
@@ -199,14 +873,107 @@ export const statsApi = {
       label: string | null;
       sortOrder: number;
       isActive: boolean;
-    }[]>('/stats');
+    }[]>(endpoint);
 
-    return data.map(s => ({
+    const stats = data.map(s => ({
       id: parseInt(s.id.replace(/-/g, ''), 16) % 1000000,
       value: s.value ?? 0,
       suffix: s.suffix ?? '',
       label: s.label ?? '',
+      sortOrder: s.sortOrder,
+      isActive: s.isActive,
     }));
+
+    // Apply client-side pagination
+    const total = stats.length;
+    const page = options?.page ?? 1;
+    const limit = options?.limit ?? 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedData = stats.slice(startIndex, endIndex);
+
+    return {
+      data: paginatedData,
+      total,
+    };
+  },
+
+  getById: async (id: string): Promise<Stat> => {
+    const data = await fetcher<{
+      id: string;
+      value: number | null;
+      suffix: string | null;
+      label: string | null;
+      sortOrder: number;
+      isActive: boolean;
+    }>(`/stats/${id}`);
+
+    return {
+      id: parseInt(id.replace(/-/g, ''), 16) % 1000000,
+      value: data.value ?? 0,
+      suffix: data.suffix ?? '',
+      label: data.label ?? '',
+      sortOrder: data.sortOrder,
+      isActive: data.isActive,
+    };
+  },
+
+  create: async (data: Omit<Stat, 'id'>): Promise<Stat> => {
+    const response = await fetcher<{
+      id: string;
+      value: number | null;
+      suffix: string | null;
+      label: string | null;
+      sortOrder: number;
+      isActive: boolean;
+    }>('/stats', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return {
+      id: parseInt(response.id.replace(/-/g, ''), 16) % 1000000,
+      value: response.value ?? 0,
+      suffix: response.suffix ?? '',
+      label: response.label ?? '',
+      sortOrder: response.sortOrder,
+      isActive: response.isActive,
+    };
+  },
+
+  update: async (id: string, data: Partial<Omit<Stat, 'id'>>): Promise<Stat> => {
+    const response = await fetcher<{
+      id: string;
+      value: number | null;
+      suffix: string | null;
+      label: string | null;
+      sortOrder: number;
+      isActive: boolean;
+    }>(`/stats/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return {
+      id: parseInt(response.id.replace(/-/g, ''), 16) % 1000000,
+      value: response.value ?? 0,
+      suffix: response.suffix ?? '',
+      label: response.label ?? '',
+      sortOrder: response.sortOrder,
+      isActive: response.isActive,
+    };
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await fetcher<void>(`/stats/${id}`, {
+      method: 'DELETE',
+    });
   },
 };
 
@@ -214,7 +981,24 @@ export const statsApi = {
  * Hero Slides APIs
  */
 export const heroSlidesApi = {
-  getAll: async (): Promise<HeroSlide[]> => {
+  getAll: async (options?: {
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  }): Promise<{
+    data: HeroSlide[];
+    total: number;
+  }> => {
+    // Build query parameters for sorting
+    const params = new URLSearchParams();
+    if (options?.sortBy) params.append('sortBy', options.sortBy);
+    if (options?.sortOrder) params.append('sortOrder', options.sortOrder);
+    // Note: We do not send page and limit to the API because we assume the API
+    // does not support server-side pagination and returns all matching records.
+    // We will handle pagination on the client side.
+
+    const endpoint = `/hero-slides${params.toString() ? `?${params.toString()}` : ''}`;
     const data = await fetcher<{
       id: string;
       title: string;
@@ -227,9 +1011,9 @@ export const heroSlidesApi = {
       image: string | null;
       sortOrder: number;
       isActive: boolean;
-    }[]>('/hero-slides');
+    }[]>(endpoint);
 
-    return data.map(slide => ({
+    const slides = data.map(slide => ({
       id: parseInt(slide.id.replace(/-/g, ''), 16) % 1000000,
       title: slide.title,
       subtitle: slide.subtitle ?? '',
@@ -243,7 +1027,174 @@ export const heroSlidesApi = {
         href: slide.ctaSecondaryHref ?? '#',
       },
       image: slide.image ?? '',
+      sortOrder: slide.sortOrder,
+      isActive: slide.isActive,
     }));
+
+    // Apply client-side pagination
+    const total = slides.length;
+    const page = options?.page ?? 1;
+    const limit = options?.limit ?? 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedData = slides.slice(startIndex, endIndex);
+
+    return {
+      data: paginatedData,
+      total,
+    };
+  },
+
+  getById: async (id: string): Promise<HeroSlide> => {
+    const data = await fetcher<{
+      id: string;
+      title: string;
+      subtitle: string | null;
+      description: string | null;
+      ctaPrimaryText: string | null;
+      ctaPrimaryHref: string | null;
+      ctaSecondaryText: string | null;
+      ctaSecondaryHref: string | null;
+      image: string | null;
+      sortOrder: number;
+      isActive: boolean;
+    }>(`/hero-slides/${id}`);
+
+    return {
+      id: parseInt(id.replace(/-/g, ''), 16) % 1000000,
+      title: data.title,
+      subtitle: data.subtitle ?? '',
+      description: data.description ?? '',
+      ctaPrimary: {
+        text: data.ctaPrimaryText ?? '',
+        href: data.ctaPrimaryHref ?? '#',
+      },
+      ctaSecondary: {
+        text: data.ctaSecondaryText ?? '',
+        href: data.ctaSecondaryHref ?? '#',
+      },
+      image: data.image ?? '',
+      sortOrder: data.sortOrder,
+      isActive: data.isActive,
+    };
+  },
+
+  create: async (data: Omit<HeroSlide, 'id'> & {
+    image?: File | string;
+  }): Promise<HeroSlide> => {
+    const formData = new FormData();
+    formData.append('title', data.title);
+    formData.append('subtitle', data.subtitle);
+    formData.append('description', data.description);
+    formData.append('ctaPrimaryText', data.ctaPrimary.text);
+    formData.append('ctaPrimaryHref', data.ctaPrimary.href);
+    formData.append('ctaSecondaryText', data.ctaSecondary.text);
+    formData.append('ctaSecondaryHref', data.ctaSecondary.href);
+    formData.append('sortOrder', data.sortOrder.toString());
+    formData.append('isActive', data.isActive ? 'true' : 'false');
+
+    if (data.image && data.image instanceof File) {
+      formData.append('image', data.image);
+    } else if (typeof data.image === 'string') {
+      formData.append('image', data.image);
+    }
+
+    const response = await fetcher<{
+      id: string;
+      title: string;
+      subtitle: string | null;
+      description: string | null;
+      ctaPrimaryText: string | null;
+      ctaPrimaryHref: string | null;
+      ctaSecondaryText: string | null;
+      ctaSecondaryHref: string | null;
+      image: string | null;
+      sortOrder: number;
+      isActive: boolean;
+    }>('/hero-slides', {
+      method: 'POST',
+      body: formData,
+    });
+
+    return {
+      id: parseInt(response.id.replace(/-/g, ''), 16) % 1000000,
+      title: response.title,
+      subtitle: response.subtitle ?? '',
+      description: response.description ?? '',
+      ctaPrimary: {
+        text: response.ctaPrimaryText ?? '',
+        href: response.ctaPrimaryHref ?? '#',
+      },
+      ctaSecondary: {
+        text: response.ctaSecondaryText ?? '',
+        href: response.ctaSecondaryHref ?? '#',
+      },
+      image: response.image ?? '',
+      sortOrder: response.sortOrder,
+      isActive: response.isActive,
+    };
+  },
+
+  update: async (id: string, data: Partial<Omit<HeroSlide, 'id'>> & {
+    image?: File | string;
+  }): Promise<HeroSlide> => {
+    const formData = new FormData();
+    if (data.title !== undefined) formData.append('title', data.title);
+    if (data.subtitle !== undefined) formData.append('subtitle', data.subtitle);
+    if (data.description !== undefined) formData.append('description', data.description);
+    if (data.ctaPrimary?.text !== undefined) formData.append('ctaPrimaryText', data.ctaPrimary.text);
+    if (data.ctaPrimary?.href !== undefined) formData.append('ctaPrimaryHref', data.ctaPrimary.href);
+    if (data.ctaSecondary?.text !== undefined) formData.append('ctaSecondaryText', data.ctaSecondary.text);
+    if (data.ctaSecondary?.href !== undefined) formData.append('ctaSecondaryHref', data.ctaSecondary.href);
+    if (data.sortOrder !== undefined) formData.append('sortOrder', data.sortOrder.toString());
+    if (data.isActive !== undefined) formData.append('isActive', data.isActive);
+
+    if (data.image && data.image instanceof File) {
+      formData.append('image', data.image);
+    } else if (typeof data.image === 'string') {
+      formData.append('image', data.image);
+    }
+
+    const response = await fetcher<{
+      id: string;
+      title: string;
+      subtitle: string | null;
+      description: string | null;
+      ctaPrimaryText: string | null;
+      ctaPrimaryHref: string | null;
+      ctaSecondaryText: string | null;
+      ctaSecondaryHref: string | null;
+      image: string | null;
+      sortOrder: number;
+      isActive: boolean;
+    }>(`/hero-slides/${id}`, {
+      method: 'PATCH',
+      body: formData,
+    });
+
+    return {
+      id: parseInt(response.id.replace(/-/g, ''), 16) % 1000000,
+      title: response.title,
+      subtitle: response.subtitle ?? '',
+      description: response.description ?? '',
+      ctaPrimary: {
+        text: response.ctaPrimaryText ?? '',
+        href: response.ctaPrimaryHref ?? '#',
+      },
+      ctaSecondary: {
+        text: response.ctaSecondaryText ?? '',
+        href: response.ctaSecondaryHref ?? '#',
+      },
+      image: response.image ?? '',
+      sortOrder: response.sortOrder,
+      isActive: response.isActive,
+    };
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await fetcher<void>(`/hero-slides/${id}`, {
+      method: 'DELETE',
+    });
   },
 };
 
@@ -251,12 +1202,219 @@ export const heroSlidesApi = {
  * Lead APIs (for enquiry form)
  */
 export const leadsApi = {
+  getAll: async (options?: {
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+    examInterest?: string;
+    status?: string;
+  }): Promise<{
+    data: Lead[];
+    total: number;
+  }> => {
+    // Build query parameters for sorting, filtering and pagination
+    const params = new URLSearchParams();
+    if (options?.page) params.append('page', options.page.toString());
+    if (options?.limit) params.append('limit', options.limit.toString());
+    if (options?.sortBy) params.append('sortBy', options.sortBy);
+    if (options?.sortOrder) params.append('sortOrder', options.sortOrder);
+    if (options?.examInterest) params.append('examInterest', options.examInterest);
+    if (options?.status) params.append('status', options.status);
+
+    const endpoint = `/leads${params.toString() ? `?${params.toString()}` : ''}`;
+    const data = await fetcher<{
+      id: string;
+      name: string;
+      phone: string;
+      email: string | null;
+      examInterest: string;
+      message: string | null;
+      source: string | null;
+      status: string;
+      createdAt: string;
+      updatedAt: string | null;
+    }[]>(endpoint);
+
+    // Transform backend Lead format to frontend Lead format
+    const leads = data.map(lead => ({
+      id: lead.id,
+      name: lead.name,
+      phone: lead.phone,
+      email: lead.email ?? '',
+      examInterest: lead.examInterest,
+      message: lead.message ?? '',
+      source: lead.source ?? '',
+      status: lead.status,
+      createdAt: lead.createdAt,
+      updatedAt: lead.updatedAt ?? undefined,
+    }));
+
+    // Apply client-side pagination (assuming API returns all implementations )
+    const total = leads.length;
+    const page = options?.page ?? 1;
+    const limit = options?.limit ?? 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedData = leads.slice(startIndex, endIndex);
+
+    return {
+      data: paginatedData,
+      total,
+    };
+  },
+
+  getById: async (id: string): Promise<Lead> => {
+    const data = await fetcher<{
+      id: string;
+      name: string;
+      phone: string;
+      email: string | null;
+      examInterest: string;
+      message: string | null;
+      source: string | null;
+      status: string;
+      createdAt: string;
+      updatedAt: string | null;
+    }>(`/leads/${id}`);
+
+    return {
+      id: data.id,
+      name: data.name,
+      phone: data.phone,
+      email: data.email ?? '',
+      examInterest: data.examInterest,
+      message: data.message ?? '',
+      source: data.source ?? '',
+      status: data.status,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt ?? undefined,
+    };
+  },
+
   create: async (data: Omit<Lead, 'id' | 'createdAt' | 'updatedAt'>): Promise<Lead> => {
     const result = await fetcher<Lead>('/leads', {
       method: 'POST',
       body: JSON.stringify(data),
     });
     return result;
+  },
+
+  update: async (id: string, data: Partial<Omit<Lead, 'id'>>): Promise<Lead> => {
+    const result = await fetcher<Lead>(`/leads/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+    return result;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await fetcher<void>(`/leads/${id}`, {
+      method: 'DELETE',
+    });
+  },
+};
+
+/**
+ * User APIs (for admin user management)
+ */
+export const usersApi = {
+  getAll: async (options?: {
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+    role?: string;
+  }): Promise<{
+    data: User[];
+    total: number;
+  }> => {
+    // Build query parameters for sorting, filtering and pagination
+    const params = new URLSearchParams();
+    if (options?.page) params.append('page', options.page.toString());
+    if (options?.limit) params.append('limit', options.limit.toString());
+    if (options?.sortBy) params.append('sortBy', options.sortBy);
+    if (options?.sortOrder) params.append('sortOrder', options.sortOrder);
+    if (options?.role) params.append('role', options.role);
+
+    const endpoint = `/users${params.toString() ? `?${params.toString()}` : ''}`;
+    const data = await fetcher<{
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+      createdAt: string;
+      updatedAt: string | null;
+    }[]>(endpoint);
+
+    // Transform backend User format to frontend User format
+    const users = data.map(user => ({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt ?? undefined,
+    }));
+
+    // Apply client-side pagination (assuming API returns all implementations )
+    const total = users.length;
+    const page = options?.page ?? 1;
+    const limit = options?.limit ?? 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedData = users.slice(startIndex, endIndex);
+
+    return {
+      data: paginatedData,
+      total,
+    };
+  },
+
+  getById: async (id: string): Promise<User> => {
+    const data = await fetcher<{
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+      createdAt: string;
+      updatedAt: string | null;
+    }>(`/users/${id}`);
+
+    return {
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      role: data.role,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt ?? undefined,
+    };
+  },
+
+  create: async (data: Omit<User, 'id' | 'createdAt' | 'updatedAt'> & {
+    password: string;
+  }): Promise<User> => {
+    const result = await fetcher<User>('/users', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    return result;
+  },
+
+  update: async (id: string, data: Partial<Omit<User, 'id'>> & {
+    password?: string;
+  }): Promise<User> => {
+    const result = await fetcher<User>(`/users/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+    return result;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await fetcher<void>(`/users/${id}`, {
+      method: 'DELETE',
+    });
   },
 };
 
@@ -269,6 +1427,11 @@ export const authApi = {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
+    // Store token and user
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('token', result.accessToken);
+      localStorage.setItem('user', JSON.stringify(result.user));
+    }
     return result;
   },
 
@@ -278,5 +1441,21 @@ export const authApi = {
       body: JSON.stringify(userData),
     });
     return result;
+  },
+
+  logout: async (): Promise<void> => {
+    // Call backend logout endpoint requires token; we will fetch then clear token
+    try {
+      await fetcher<void>('/auth/logout', {
+        method: 'POST',
+      });
+    } catch (error) {
+      // Ignore errors on logout
+    }
+    // Remove token and user on logout
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    }
   },
 };

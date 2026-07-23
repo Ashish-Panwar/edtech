@@ -11,17 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a, _b, _c, _d;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CoursesController = void 0;
 const common_1 = require("@nestjs/common");
 const courses_service_1 = require("./courses.service");
-const create_course_dto_1 = require("./dto/create-course.dto");
 const update_course_dto_1 = require("./dto/update-course.dto");
 const pagination_dto_1 = require("./dto/pagination.dto");
 const roles_decorator_1 = require("../auth/decorators/roles.decorator");
 const roles_guard_1 = require("../auth/guards/roles.guard");
-const common_2 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
 const path_1 = require("path");
@@ -32,11 +29,17 @@ let CoursesController = class CoursesController {
     constructor(coursesService) {
         this.coursesService = coursesService;
     }
-    create(createCourseDto, image) {
+    create(request, image) {
+        const dto = { ...request.body };
         if (image) {
-            createCourseDto.image = image.filename;
+            dto.image = image.filename;
         }
-        return this.coursesService.create(createCourseDto);
+        if (dto.isActive !== undefined) {
+            dto.isActive = typeof dto.isActive === 'string'
+                ? dto.isActive === 'true'
+                : !!dto.isActive;
+        }
+        return this.coursesService.create(dto);
     }
     findAll(paginationDto, exam) {
         return this.coursesService.findAll(paginationDto, exam);
@@ -44,11 +47,16 @@ let CoursesController = class CoursesController {
     findOne(id) {
         return this.coursesService.findOne(id);
     }
-    update(id, updateCourseDto, image) {
+    update(id, dto, image) {
         if (image) {
-            updateCourseDto.image = image.filename;
+            dto.image = image.filename;
         }
-        return this.coursesService.update(id, updateCourseDto);
+        if (dto.isActive !== undefined) {
+            dto.isActive = typeof dto.isActive === 'string'
+                ? dto.isActive === 'true'
+                : !!dto.isActive;
+        }
+        return this.coursesService.update(id, dto);
     }
     remove(id) {
         return this.coursesService.remove(id);
@@ -80,10 +88,10 @@ __decorate([
             cb(null, true);
         }
     })),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_course_dto_1.CreateCourseDto, typeof (_b = typeof Express !== "undefined" && (_a = Express.Multer) !== void 0 && _a.File) === "function" ? _b : Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], CoursesController.prototype, "create", null);
 __decorate([
@@ -130,7 +138,7 @@ __decorate([
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_course_dto_1.UpdateCourseDto, typeof (_d = typeof Express !== "undefined" && (_c = Express.Multer) !== void 0 && _c.File) === "function" ? _d : Object]),
+    __metadata("design:paramtypes", [String, update_course_dto_1.UpdateCourseDto, Object]),
     __metadata("design:returntype", void 0)
 ], CoursesController.prototype, "update", null);
 __decorate([
@@ -144,7 +152,7 @@ __decorate([
 exports.CoursesController = CoursesController = __decorate([
     (0, swagger_1.ApiTags)('courses'),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, common_2.UseGuards)(roles_guard_1.RolesGuard),
+    (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
     (0, common_1.Controller)('courses'),
     __metadata("design:paramtypes", [courses_service_1.CoursesService])
 ], CoursesController);

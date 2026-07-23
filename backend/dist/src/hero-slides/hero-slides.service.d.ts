@@ -5,92 +5,92 @@ import { PaginationDto } from './dto/pagination.dto';
 export declare class HeroSlidesService {
     private readonly prisma;
     constructor(prisma: PrismaService);
-    create(dto: CreateHeroSlideDto): import("../../generated/prisma/models").Prisma__HeroSlideClient<{
+    create(dto: CreateHeroSlideDto): import("generated/prisma/models").Prisma__HeroSlideClient<{
         id: string;
+        description: string | null;
+        sortOrder: number;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
-        description: string | null;
         image: string | null;
-        isActive: boolean;
         subtitle: string | null;
         ctaPrimaryText: string | null;
         ctaPrimaryHref: string | null;
         ctaSecondaryText: string | null;
         ctaSecondaryHref: string | null;
-        sortOrder: number;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("../../generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
+        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
     findAll(paginationDto: PaginationDto): Promise<{
         data: {
             id: string;
+            description: string | null;
+            sortOrder: number;
+            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
             title: string;
-            description: string | null;
             image: string | null;
-            isActive: boolean;
             subtitle: string | null;
             ctaPrimaryText: string | null;
             ctaPrimaryHref: string | null;
             ctaSecondaryText: string | null;
             ctaSecondaryHref: string | null;
-            sortOrder: number;
         }[];
         total: number;
         page: number;
         limit: number;
     }>;
-    findOne(id: string): import("../../generated/prisma/models").Prisma__HeroSlideClient<{
+    findOne(id: string): import("generated/prisma/models").Prisma__HeroSlideClient<{
         id: string;
+        description: string | null;
+        sortOrder: number;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
-        description: string | null;
         image: string | null;
-        isActive: boolean;
         subtitle: string | null;
         ctaPrimaryText: string | null;
         ctaPrimaryHref: string | null;
         ctaSecondaryText: string | null;
         ctaSecondaryHref: string | null;
-        sortOrder: number;
     } | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("../../generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
+        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
-    update(id: string, dto: UpdateHeroSlideDto): import("../../generated/prisma/models").Prisma__HeroSlideClient<{
+    update(id: string, dto: UpdateHeroSlideDto): import("generated/prisma/models").Prisma__HeroSlideClient<{
         id: string;
+        description: string | null;
+        sortOrder: number;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
-        description: string | null;
         image: string | null;
-        isActive: boolean;
         subtitle: string | null;
         ctaPrimaryText: string | null;
         ctaPrimaryHref: string | null;
         ctaSecondaryText: string | null;
         ctaSecondaryHref: string | null;
-        sortOrder: number;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("../../generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
+        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
-    remove(id: string): import("../../generated/prisma/models").Prisma__HeroSlideClient<{
+    remove(id: string): import("generated/prisma/models").Prisma__HeroSlideClient<{
         id: string;
+        description: string | null;
+        sortOrder: number;
+        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
         title: string;
-        description: string | null;
         image: string | null;
-        isActive: boolean;
         subtitle: string | null;
         ctaPrimaryText: string | null;
         ctaPrimaryHref: string | null;
         ctaSecondaryText: string | null;
         ctaSecondaryHref: string | null;
-        sortOrder: number;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("../../generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
+        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
 }

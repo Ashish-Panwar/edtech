@@ -10,10 +10,7 @@ exports.ThrottleConfig = void 0;
 const common_1 = require("@nestjs/common");
 let ThrottleConfig = class ThrottleConfig {
     createThrottlerOptions() {
-        return {
-            ttl: 60,
-            limit: 100,
-        };
+        return [{ ttl: 60, limit: 100 }];
     }
 };
 exports.ThrottleConfig = ThrottleConfig;

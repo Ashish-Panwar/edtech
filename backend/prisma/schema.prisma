@@ -9,12 +9,11 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // ─── Lead (Student Enquiry) ───
 model Lead {
-  id            String   @id @default(uuid()) @db.Uuid
+  id            String   @id @default(uuid())
   name          String   @db.VarChar(100)
   phone         String   @db.VarChar(20)
   email         String?  @db.VarChar(255)
@@ -30,7 +29,7 @@ model Lead {
 
 // ─── Admin User ───
 model User {
-  id           String   @id @default(uuid()) @db.Uid
+  id           String   @id @default(uuid())
   name         String   @db.VarChar(100)
   email        String   @unique @db.VarChar(255)
   passwordHash String   @map("password_hash") @db.VarChar(255)
@@ -43,7 +42,7 @@ model User {
 
 // ─── Course ───
 model Course {
-  id          String   @id @default(uuid()) @db.Uid
+  id          String   @id @default(uuid())
   title       String   @db.VarChar(200)
   slug        String   @unique @db.VarChar(200)
   exam        String   @db.VarChar(50)
@@ -62,7 +61,7 @@ model Course {
 
 // ─── Faculty ───
 model Faculty {
-  id            String   @id @default(uuid()) @db.Uid
+  id            String   @id @default(uuid())
   name          String   @db.VarChar(100)
   slug          String   @unique @db.VarChar(200)
   subject       String   @db.VarChar(200)
@@ -79,7 +78,7 @@ model Faculty {
 
 // ─── Testimonial (Success Story) ───
 model Testimonial {
-  id          String   @id @default(uuid()) @db.Uid
+  id          String   @id @default(uuid())
   studentName String   @map("student_name") @db.VarChar(100)
   exam        String   @db.VarChar(50)
   rank        String   @db.VarChar(50)
@@ -96,7 +95,7 @@ model Testimonial {
 
 // ─── Hero Slide ───
 model HeroSlide {
-  id                String   @id @default(uuid()) @db.Uid
+  id                String   @id @default(uuid())
   title             String   @db.VarChar(200)
   subtitle          String?  @db.VarChar(200)
   description       String?  @db.Text
@@ -115,7 +114,7 @@ model HeroSlide {
 
 // ─── Stat ───
 model Stat {
-  id        String   @id @default(uuid()) @db.Uid
+  id        String   @id @default(uuid())
   value     Int
   suffix    String   @db.VarChar(10)
   label     String   @db.VarChar(100)
@@ -129,7 +128,7 @@ model Stat {
 
 // ─── Exam (reference data for exams we cover) ───
 model Exam {
-  id          String   @id @default(uuid()) @db.Uid
+  id          String   @id @default(uuid())
   name        String   @unique @db.VarChar(50)
   fullName    String   @map("full_name") @db.VarChar(200)
   description String?  @db.Text

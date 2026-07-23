@@ -36,6 +36,7 @@ export interface AuthResponse {
  * Base URL for API - in production this would be set via environment variable
  */
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001';
+  console.log('API_BASE_URL:', API_BASE_URL);
 
 // Loading manager to track API request states
 let activeRequestCount = 0;
@@ -96,6 +97,7 @@ async function fetcher<T>(endpoint: string, options: RequestInit = {}): Promise<
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
   }
+  console.log("Calling fetcher with URL:", url);
 
   // Notify loading manager of request start
   loadingManager.increment();
@@ -753,7 +755,7 @@ export const testimonialsApi = {
     formData.append('studentName', data.name);
     formData.append('exam', data.exam);
     formData.append('rank', data.rank);
-    formData.append('year', data.year ? data.year.toString() : '');
+    if (data.year !== undefined && data.year !== null) formData.append('year', data.year.toString());
     formData.append('story', data.story);
     formData.append('quote', data.quote);
     formData.append('isActive', data.isActive ? 'true' : 'false');
@@ -799,10 +801,10 @@ export const testimonialsApi = {
     if (data.name !== undefined) formData.append('studentName', data.name);
     if (data.exam !== undefined) formData.append('exam', data.exam);
     if (data.rank !== undefined) formData.append('rank', data.rank);
-    if (data.year !== undefined) formData.append('year', data.year ? data.year.toString() : '');
+    if (data.year !== undefined && data.year !== null) formData.append('year', data.year.toString());
     if (data.story !== undefined) formData.append('story', data.story);
     if (data.quote !== undefined) formData.append('quote', data.quote);
-    if (data.isActive !== undefined) formData.append('isActive', data.isActive);
+    if (data.isActive !== undefined) formData.append('isActive', data.isActive ? 'true' : 'false');
 
     if (data.image && data.image instanceof File) {
       formData.append('image', data.image);

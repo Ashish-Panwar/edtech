@@ -1,16 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UploadedFile, UseInterceptors, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UploadedFile, UseInterceptors, BadRequestException, Req, UseGuards } from '@nestjs/common';
 import { TestimonialsService } from './testimonials.service';
 import { CreateTestimonialDto } from './dto/create-testimonial.dto';
 import { UpdateTestimonialDto } from './dto/update-testimonial.dto';
 import { PaginationDto } from './dto/pagination.dto';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { UseGuards } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { ApiTags, ApiConsumes, ApiBearerAuth } from '@nestjs/swagger';
+import { Request } from 'express';
+type MulterFile = Express.Multer.File;
 
 @ApiTags('testimonials')
 @ApiBearerAuth()
@@ -43,10 +44,17 @@ export class TestimonialsController {
       cb(null, true);
     }
   }))
-  create(@Body() dto: CreateTestimonialDto, @UploadedFile() image: Express.Multer.File) {
+  create(@Req() request: Request, @UploadedFile() image: MulterFile) {
+    const dto = { ...request.body } as CreateTestimonialDto;
     // Add the image filename to the DTO if file was uploaded
     if (image) {
       dto.image = image.filename;
+    }
+    // Ensure boolean fields are properly typed
+    if (dto.isActive !== undefined) {
+      dto.isActive = typeof dto.isActive === 'string'
+        ? dto.isActive === 'true'
+        : !!dto.isActive;
     }
     return this.service.create(dto);
   }
@@ -85,10 +93,17 @@ export class TestimonialsController {
       cb(null, true);
     }
   }))
-  update(@Param('id') id: string, @Body() dto: UpdateTestimonialDto, @UploadedFile() image: Express.Multer.File) {
+  update(@Param('id') id: string, @Req() request: Request, @UploadedFile() image: MulterFile) {
+    const dto = { ...request.body } as UpdateTestimonialDto;
     // Add the image filename to the DTO if file was uploaded
     if (image) {
       dto.image = image.filename;
+    }
+    // Ensure boolean fields are properly typed
+    if (dto.isActive !== undefined) {
+      dto.isActive = typeof dto.isActive === 'string'
+        ? dto.isActive === 'true'
+        : !!dto.isActive;
     }
     return this.service.update(id, dto);
   }

@@ -1,16 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UploadedFile, UseInterceptors, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UploadedFile, UseInterceptors, BadRequestException, Req, UseGuards } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { PaginationDto } from './dto/pagination.dto';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { UseGuards } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { ApiTags, ApiConsumes, ApiBearerAuth } from '@nestjs/swagger';
+import { Request } from 'express';
+type MulterFile = Express.Multer.File;
 
 @ApiTags('courses')
 @ApiBearerAuth()
@@ -43,12 +44,19 @@ export class CoursesController {
       cb(null, true);
     }
   }))
-  create(@Body() createCourseDto: CreateCourseDto, @UploadedFile() image: Express.Multer.File) {
+  create(@Req() request: Request, @UploadedFile() image: MulterFile) {
+    const dto = { ...request.body } as CreateCourseDto;
     // Add the image filename to the DTO if file was uploaded
     if (image) {
-      createCourseDto.image = image.filename;
+      dto.image = image.filename;
     }
-    return this.coursesService.create(createCourseDto);
+    // Ensure boolean fields are properly typed
+    if (dto.isActive !== undefined) {
+      dto.isActive = typeof dto.isActive === 'string'
+        ? dto.isActive === 'true'
+        : !!dto.isActive;
+    }
+    return this.coursesService.create(dto);
   }
 
   @Get()
@@ -85,12 +93,18 @@ export class CoursesController {
       cb(null, true);
     }
   }))
-  update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto, @UploadedFile() image: Express.Multer.File) {
+  update(@Param('id') id: string, @Body() dto: UpdateCourseDto, @UploadedFile() image: MulterFile) {
     // Add the image filename to the DTO if file was uploaded
     if (image) {
-      updateCourseDto.image = image.filename;
+      dto.image = image.filename;
     }
-    return this.coursesService.update(id, updateCourseDto);
+    // Ensure boolean fields are properly typed
+    if (dto.isActive !== undefined) {
+      dto.isActive = typeof dto.isActive === 'string'
+        ? dto.isActive === 'true'
+        : !!dto.isActive;
+    }
+    return this.coursesService.update(id, dto);
   }
 
   @Delete(':id')

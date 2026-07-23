@@ -11,17 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a, _b, _c, _d;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HeroSlidesController = void 0;
 const common_1 = require("@nestjs/common");
 const hero_slides_service_1 = require("./hero-slides.service");
-const create_hero_slide_dto_1 = require("./dto/create-hero-slide.dto");
 const update_hero_slide_dto_1 = require("./dto/update-hero-slide.dto");
 const pagination_dto_1 = require("./dto/pagination.dto");
 const roles_decorator_1 = require("../auth/decorators/roles.decorator");
 const roles_guard_1 = require("../auth/guards/roles.guard");
-const common_2 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
 const path_1 = require("path");
@@ -32,9 +29,15 @@ let HeroSlidesController = class HeroSlidesController {
     constructor(service) {
         this.service = service;
     }
-    create(dto, image) {
+    create(request, image) {
+        const dto = { ...request.body };
         if (image) {
             dto.image = image.filename;
+        }
+        if (dto.isActive !== undefined) {
+            dto.isActive = typeof dto.isActive === 'string'
+                ? dto.isActive === 'true'
+                : !!dto.isActive;
         }
         return this.service.create(dto);
     }
@@ -47,6 +50,11 @@ let HeroSlidesController = class HeroSlidesController {
     update(id, dto, image) {
         if (image) {
             dto.image = image.filename;
+        }
+        if (dto.isActive !== undefined) {
+            dto.isActive = typeof dto.isActive === 'string'
+                ? dto.isActive === 'true'
+                : !!dto.isActive;
         }
         return this.service.update(id, dto);
     }
@@ -80,10 +88,10 @@ __decorate([
             cb(null, true);
         }
     })),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_hero_slide_dto_1.CreateHeroSlideDto, typeof (_b = typeof Express !== "undefined" && (_a = Express.Multer) !== void 0 && _a.File) === "function" ? _b : Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], HeroSlidesController.prototype, "create", null);
 __decorate([
@@ -129,7 +137,7 @@ __decorate([
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_hero_slide_dto_1.UpdateHeroSlideDto, typeof (_d = typeof Express !== "undefined" && (_c = Express.Multer) !== void 0 && _c.File) === "function" ? _d : Object]),
+    __metadata("design:paramtypes", [String, update_hero_slide_dto_1.UpdateHeroSlideDto, Object]),
     __metadata("design:returntype", void 0)
 ], HeroSlidesController.prototype, "update", null);
 __decorate([
@@ -143,7 +151,7 @@ __decorate([
 exports.HeroSlidesController = HeroSlidesController = __decorate([
     (0, swagger_1.ApiTags)('hero-slides'),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, common_2.UseGuards)(roles_guard_1.RolesGuard),
+    (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
     (0, common_1.Controller)('hero-slides'),
     __metadata("design:paramtypes", [hero_slides_service_1.HeroSlidesService])
 ], HeroSlidesController);

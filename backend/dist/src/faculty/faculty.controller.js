@@ -11,16 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a, _b;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FacultyController = void 0;
 const common_1 = require("@nestjs/common");
 const faculty_service_1 = require("./faculty.service");
-const create_faculty_dto_1 = require("./dto/create-faculty.dto");
 const pagination_dto_1 = require("./dto/pagination.dto");
 const roles_decorator_1 = require("../auth/decorators/roles.decorator");
 const roles_guard_1 = require("../auth/guards/roles.guard");
-const common_2 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
 const path_1 = require("path");
@@ -31,11 +28,17 @@ let FacultyController = class FacultyController {
     constructor(facultyService) {
         this.facultyService = facultyService;
     }
-    create(createFacultyDto, image) {
+    create(request, image) {
+        const dto = { ...request.body };
         if (image) {
-            createFacultyDto.image = image.filename;
+            dto.image = image.filename;
         }
-        return this.facultyService.create(createFacultyDto);
+        if (dto.isActive !== undefined) {
+            dto.isActive = typeof dto.isActive === 'string'
+                ? dto.isActive === 'true'
+                : !!dto.isActive;
+        }
+        return this.facultyService.create(dto);
     }
     findAll(paginationDto) {
         return this.facultyService.findAll(paginationDto);
@@ -43,7 +46,21 @@ let FacultyController = class FacultyController {
     findOne(id) {
         return this.facultyService.findOne(id);
     }
-    ;
+    update(id, request, image) {
+        const dto = { ...request.body };
+        if (image) {
+            dto.image = image.filename;
+        }
+        if (dto.isActive !== undefined) {
+            dto.isActive = typeof dto.isActive === 'string'
+                ? dto.isActive === 'true'
+                : !!dto.isActive;
+        }
+        return this.facultyService.update(id, dto);
+    }
+    remove(id) {
+        return this.facultyService.remove(id);
+    }
 };
 exports.FacultyController = FacultyController;
 __decorate([
@@ -71,10 +88,10 @@ __decorate([
             cb(null, true);
         }
     })),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_faculty_dto_1.CreateFacultyDto, typeof (_b = typeof Express !== "undefined" && (_a = Express.Multer) !== void 0 && _a.File) === "function" ? _b : Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], FacultyController.prototype, "create", null);
 __decorate([
@@ -97,43 +114,44 @@ __decorate([
     (0, swagger_1.ApiConsumes)('multipart/form-data'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image', {
         storage: (0, multer_1.diskStorage)({
-            destination: (req, {
-                storage: (0, multer_1.diskStorage)({
-                    destination: (req, file, cb) => {
-                        const uploadDir = './uploads/faculty';
-                        if (!(0, fs_1.existsSync)(uploadDir)) {
-                            (0, fs_1.mkdirSync)(uploadDir, { recursive: true });
-                        }
-                        cb(null, uploadDir);
-                    },
-                    filename: (req, file, cb) => {
-                        const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
-                        return cb(null, `${randomName}${(0, path_1.extname)(file.originalname)}`);
-                    }
-                }),
-                fileFilter: (req, file, cb) => {
-                    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-                        return cb(new common_1.BadRequestException('Only image files are allowed!'), false);
-                    }
-                    cb(null, true);
+            destination: (req, file, cb) => {
+                const uploadDir = './uploads/faculty';
+                if (!(0, fs_1.existsSync)(uploadDir)) {
+                    (0, fs_1.mkdirSync)(uploadDir, { recursive: true });
                 }
-            })
-        }),
-        update(id, updateFacultyDto, image) {
-            if (image) {
-                updateFacultyDto.image = image.filename;
+                cb(null, uploadDir);
+            },
+            filename: (req, file, cb) => {
+                const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
+                return cb(null, `${randomName}${(0, path_1.extname)(file.originalname)}`);
             }
-            return this.facultyService.update(id, updateFacultyDto);
+        }),
+        fileFilter: (req, file, cb) => {
+            if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+                return cb(new common_1.BadRequestException('Only image files are allowed!'), false);
+            }
+            cb(null, true);
         }
-    }, (), remove(, id, string), {
-        return: this.facultyService.remove(id)
     })),
-    __metadata("design:type", Object)
-], FacultyController.prototype, "", void 0);
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Req)()),
+    __param(2, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object, Object]),
+    __metadata("design:returntype", void 0)
+], FacultyController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    (0, roles_decorator_1.Roles)('admin'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], FacultyController.prototype, "remove", null);
 exports.FacultyController = FacultyController = __decorate([
     (0, swagger_1.ApiTags)('faculty'),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, common_2.UseGuards)(roles_guard_1.RolesGuard),
+    (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
     (0, common_1.Controller)('faculty'),
     __metadata("design:paramtypes", [faculty_service_1.FacultyService])
 ], FacultyController);

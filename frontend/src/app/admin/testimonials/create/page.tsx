@@ -11,6 +11,7 @@ export default function CreateTestimonialPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [examLoading, setExamLoading] = useState(true);
+  const [exams, setExams] = useState<Array<{ id: string; name: string }>>([]);
   const { toast } = useToast();
   const { user } = useAuth();
 

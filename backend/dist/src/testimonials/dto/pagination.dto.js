@@ -14,6 +14,8 @@ const class_validator_1 = require("class-validator");
 class PaginationDto {
     page = 1;
     limit = 10;
+    sortBy;
+    sortOrder = 'asc';
 }
 exports.PaginationDto = PaginationDto;
 __decorate([
@@ -26,4 +28,14 @@ __decorate([
     (0, class_validator_1.Min)(1),
     __metadata("design:type", Number)
 ], PaginationDto.prototype, "limit", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], PaginationDto.prototype, "sortBy", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsIn)(['asc', 'desc']),
+    __metadata("design:type", String)
+], PaginationDto.prototype, "sortOrder", void 0);
 //# sourceMappingURL=pagination.dto.js.map
