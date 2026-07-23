@@ -6,7 +6,7 @@ const { Client } = require('pg');
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcrypt');
-require('dotenv').config();
+require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
 
 async function seed() {
   console.log('🌱 Seeding database...');
