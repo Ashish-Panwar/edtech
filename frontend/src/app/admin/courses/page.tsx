@@ -32,7 +32,7 @@ interface ExamOption {
   name: string;
 }
 
-export function AdminCoursesPage() {
+export default function AdminCoursesPage() {
   const { user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
