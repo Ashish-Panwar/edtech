@@ -7,11 +7,8 @@ export declare class HeroSlidesController {
     private readonly service;
     constructor(service: HeroSlidesService);
     create(request: Request, image: MulterFile): import(".prisma/client").Prisma.Prisma__HeroSlideClient<{
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
         sortOrder: number;
-        isActive: boolean;
+        id: string;
         title: string;
         subtitle: string | null;
         description: string | null;
@@ -20,14 +17,14 @@ export declare class HeroSlidesController {
         ctaSecondaryText: string | null;
         ctaSecondaryHref: string | null;
         image: string | null;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     findAll(paginationDto: PaginationDto): Promise<{
         data: {
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
             sortOrder: number;
-            isActive: boolean;
+            id: string;
             title: string;
             subtitle: string | null;
             description: string | null;
@@ -36,17 +33,17 @@ export declare class HeroSlidesController {
             ctaSecondaryText: string | null;
             ctaSecondaryHref: string | null;
             image: string | null;
+            isActive: boolean;
+            createdAt: Date;
+            updatedAt: Date;
         }[];
         total: number;
         page: number;
         limit: number;
     }>;
     findOne(id: string): import(".prisma/client").Prisma.Prisma__HeroSlideClient<{
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
         sortOrder: number;
-        isActive: boolean;
+        id: string;
         title: string;
         subtitle: string | null;
         description: string | null;
@@ -55,13 +52,13 @@ export declare class HeroSlidesController {
         ctaSecondaryText: string | null;
         ctaSecondaryHref: string | null;
         image: string | null;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     } | null, null, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     update(id: string, dto: UpdateHeroSlideDto, image: MulterFile): import(".prisma/client").Prisma.Prisma__HeroSlideClient<{
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
         sortOrder: number;
-        isActive: boolean;
+        id: string;
         title: string;
         subtitle: string | null;
         description: string | null;
@@ -70,13 +67,13 @@ export declare class HeroSlidesController {
         ctaSecondaryText: string | null;
         ctaSecondaryHref: string | null;
         image: string | null;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     remove(id: string): import(".prisma/client").Prisma.Prisma__HeroSlideClient<{
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
         sortOrder: number;
-        isActive: boolean;
+        id: string;
         title: string;
         subtitle: string | null;
         description: string | null;
@@ -85,6 +82,9 @@ export declare class HeroSlidesController {
         ctaSecondaryText: string | null;
         ctaSecondaryHref: string | null;
         image: string | null;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
 }
 export {};

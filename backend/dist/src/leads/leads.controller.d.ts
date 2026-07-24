@@ -7,28 +7,28 @@ export declare class LeadsController {
     constructor(service: LeadsService);
     create(dto: CreateLeadDto): import(".prisma/client").Prisma.Prisma__LeadClient<{
         id: string;
-        email: string | null;
         name: string;
-        createdAt: Date;
-        updatedAt: Date;
         phone: string;
+        email: string | null;
         examInterest: string;
         message: string | null;
         status: string;
         source: string;
+        createdAt: Date;
+        updatedAt: Date;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     findAll(paginationDto: PaginationDto): Promise<{
         data: {
             id: string;
-            email: string | null;
             name: string;
-            createdAt: Date;
-            updatedAt: Date;
             phone: string;
+            email: string | null;
             examInterest: string;
             message: string | null;
             status: string;
             source: string;
+            createdAt: Date;
+            updatedAt: Date;
         }[];
         total: number;
         page: number;
@@ -36,38 +36,38 @@ export declare class LeadsController {
     }>;
     findOne(id: string): import(".prisma/client").Prisma.Prisma__LeadClient<{
         id: string;
-        email: string | null;
         name: string;
-        createdAt: Date;
-        updatedAt: Date;
         phone: string;
+        email: string | null;
         examInterest: string;
         message: string | null;
         status: string;
         source: string;
+        createdAt: Date;
+        updatedAt: Date;
     } | null, null, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     update(id: string, dto: UpdateLeadDto): import(".prisma/client").Prisma.Prisma__LeadClient<{
         id: string;
-        email: string | null;
         name: string;
-        createdAt: Date;
-        updatedAt: Date;
         phone: string;
+        email: string | null;
         examInterest: string;
         message: string | null;
         status: string;
         source: string;
+        createdAt: Date;
+        updatedAt: Date;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     remove(id: string): import(".prisma/client").Prisma.Prisma__LeadClient<{
         id: string;
-        email: string | null;
         name: string;
-        createdAt: Date;
-        updatedAt: Date;
         phone: string;
+        email: string | null;
         examInterest: string;
         message: string | null;
         status: string;
         source: string;
+        createdAt: Date;
+        updatedAt: Date;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
 }

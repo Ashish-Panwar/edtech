@@ -319,21 +319,26 @@ export const coursesApi = {
     if (options?.exam) params.append('exam', options.exam);
 
     const endpoint = `/courses${params.toString() ? `?${params.toString()}` : ''}`;
-    const response = await fetcher<any>(endpoint);
+    const data = await fetcher<{
+      id: string;
+      title: string;
+      slug: string;
+      exam: string;
+      description: string | null;
+      duration: string | null;
+      mode: string | null;
+      price: number | null;
+      highlights: string[] | null;
+      image: string | null;
+      isActive: boolean;
+    }[]>(endpoint);
 
-    // Handle both formats: { data: [], total: number } or just [] (if backend returns array)
-    let coursesArray: any[] = [];
-    let apiTotal = 0;
-    if (Array.isArray(response)) {
-      coursesArray = response;
-      apiTotal = response.length;
-    } else if (response && response.data) {
-      coursesArray = response.data;
-      apiTotal = response.total ?? response.data.length;
-    }
+    // We need to get total count from response headers or a separate call
+    // For now, we'll assume the API returns metadata or we'll make a separate count call
+    // In a real implementation, the API would return { data: [...], total: number }
 
     // Transform backend Course format to frontend Course format
-    const transformedData = coursesArray.map(course => ({
+    const transformedData = data.map(course => ({
       id: parseInt(course.id.replace(/-/g, ''), 16) % 1000000,
       title: course.title,
       exam: course.exam,
@@ -348,7 +353,7 @@ export const coursesApi = {
 
     return {
       data: transformedData,
-      total: apiTotal || transformedData.length
+      total: transformedData.length // This is a placeholder - in real app, API would return total count
     };
   },
 
@@ -507,17 +512,19 @@ export const facultyApi = {
     // We will handle pagination on the client side.
 
     const endpoint = `/faculty${params.toString() ? `?${params.toString()}` : ''}`;
-    const response = await fetcher<any>(endpoint);
+    const data = await fetcher<{
+      id: string;
+      name: string;
+      slug: string;
+      subject: string;
+      experience: string | null;
+      qualification: string | null;
+      bio: string | null;
+      image: string | null;
+      isActive: boolean;
+    }[]>(endpoint);
 
-    // Handle both formats: { data: [], total: number } or just [] (if backend returns array)
-    let facultyArray: any[] = [];
-    if (Array.isArray(response)) {
-      facultyArray = response;
-    } else if (response && response.data) {
-      facultyArray = response.data;
-    }
-
-    const faculties = facultyArray.map(fac => ({
+    const faculties = data.map(fac => ({
       id: parseInt(fac.id.replace(/-/g, ''), 16) % 1000000,
       name: fac.name,
       subject: fac.subject,
@@ -1045,17 +1052,21 @@ export const heroSlidesApi = {
     // We will handle pagination on the client side.
 
     const endpoint = `/hero-slides${params.toString() ? `?${params.toString()}` : ''}`;
-    const response = await fetcher<any>(endpoint);
+    const data = await fetcher<{
+      id: string;
+      title: string;
+      subtitle: string | null;
+      description: string | null;
+      ctaPrimaryText: string | null;
+      ctaPrimaryHref: string | null;
+      ctaSecondaryText: string | null;
+      ctaSecondaryHref: string | null;
+      image: string | null;
+      sortOrder: number;
+      isActive: boolean;
+    }[]>(endpoint);
 
-    // Handle both formats: { data: [], total: number } or just [] (if backend returns array)
-    let slidesArray: any[] = [];
-    if (Array.isArray(response)) {
-      slidesArray = response;
-    } else if (response && response.data) {
-      slidesArray = response.data;
-    }
-
-    const slides = slidesArray.map(slide => ({
+    const slides = data.map(slide => ({
       id: parseInt(slide.id.replace(/-/g, ''), 16) % 1000000,
       title: slide.title,
       subtitle: slide.subtitle ?? '',
@@ -1265,18 +1276,21 @@ export const leadsApi = {
     if (options?.status) params.append('status', options.status);
 
     const endpoint = `/leads${params.toString() ? `?${params.toString()}` : ''}`;
-    const response = await fetcher<any>(endpoint);
-
-    // Handle both formats: { data: [], total: number } or just [] (if backend returns array)
-    let leadsArray: any[] = [];
-    if (Array.isArray(response)) {
-      leadsArray = response;
-    } else if (response && response.data) {
-      leadsArray = response.data;
-    }
+    const data = await fetcher<{
+      id: string;
+      name: string;
+      phone: string;
+      email: string | null;
+      examInterest: string;
+      message: string | null;
+      source: string | null;
+      status: string;
+      createdAt: string;
+      updatedAt: string | null;
+    }[]>(endpoint);
 
     // Transform backend Lead format to frontend Lead format
-    const leads = leadsArray.map(lead => ({
+    const leads = data.map(lead => ({
       id: lead.id,
       name: lead.name,
       phone: lead.phone,
@@ -1377,18 +1391,17 @@ export const usersApi = {
     if (options?.role) params.append('role', options.role);
 
     const endpoint = `/users${params.toString() ? `?${params.toString()}` : ''}`;
-    const response = await fetcher<any>(endpoint);
-
-    // Handle both formats: { data: [], total: number } or just [] (if backend returns array)
-    let usersArray: any[] = [];
-    if (Array.isArray(response)) {
-      usersArray = response;
-    } else if (response && response.data) {
-      usersArray = response.data;
-    }
+    const data = await fetcher<{
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+      createdAt: string;
+      updatedAt: string | null;
+    }[]>(endpoint);
 
     // Transform backend User format to frontend User format
-    const users = usersArray.map(user => ({
+    const users = data.map(user => ({
       id: user.id,
       name: user.name,
       email: user.email,

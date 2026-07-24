@@ -8,29 +8,29 @@ export declare class FacultyService {
     create(createFacultyDto: CreateFacultyDto): import(".prisma/client").Prisma.Prisma__FacultyClient<{
         id: string;
         name: string;
-        createdAt: Date;
-        updatedAt: Date;
-        isActive: boolean;
-        image: string | null;
         slug: string;
         subject: string;
         experience: string | null;
         qualification: string | null;
         bio: string | null;
+        image: string | null;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     findAll(paginationDto: PaginationDto): Promise<{
         data: {
             id: string;
             name: string;
-            createdAt: Date;
-            updatedAt: Date;
-            isActive: boolean;
-            image: string | null;
             slug: string;
             subject: string;
             experience: string | null;
             qualification: string | null;
             bio: string | null;
+            image: string | null;
+            isActive: boolean;
+            createdAt: Date;
+            updatedAt: Date;
         }[];
         total: number;
         page: number;
@@ -39,40 +39,40 @@ export declare class FacultyService {
     findOne(id: string): import(".prisma/client").Prisma.Prisma__FacultyClient<{
         id: string;
         name: string;
-        createdAt: Date;
-        updatedAt: Date;
-        isActive: boolean;
-        image: string | null;
         slug: string;
         subject: string;
         experience: string | null;
         qualification: string | null;
         bio: string | null;
+        image: string | null;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     } | null, null, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     update(id: string, updateFacultyDto: UpdateFacultyDto): import(".prisma/client").Prisma.Prisma__FacultyClient<{
         id: string;
         name: string;
-        createdAt: Date;
-        updatedAt: Date;
-        isActive: boolean;
-        image: string | null;
         slug: string;
         subject: string;
         experience: string | null;
         qualification: string | null;
         bio: string | null;
+        image: string | null;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     remove(id: string): import(".prisma/client").Prisma.Prisma__FacultyClient<{
         id: string;
         name: string;
-        createdAt: Date;
-        updatedAt: Date;
-        isActive: boolean;
-        image: string | null;
         slug: string;
         subject: string;
         experience: string | null;
         qualification: string | null;
         bio: string | null;
+        image: string | null;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
 }
