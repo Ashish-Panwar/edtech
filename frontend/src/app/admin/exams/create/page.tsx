@@ -8,7 +8,7 @@ import { useAuth } from '@/lib/auth';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
 
-export function AdminExamsCreatePage() {
+export default function AdminExamsCreatePage() {
   const { user } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
