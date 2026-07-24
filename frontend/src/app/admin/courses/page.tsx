@@ -6,7 +6,7 @@ import { coursesApi, examsApi } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/lib/auth';
 import { useSearchParams, useRouter } from 'next/navigation';
-import AdminTable from '@/components/ui/AdminTable';
+import AdminTable, { ColumnType, ActionItem } from '@/components/ui/AdminTable';
 import Skeleton from '@/components/ui/Skeleton';
 
 // Types for our course list
@@ -143,7 +143,7 @@ export default function AdminCoursesPage() {
   };
 
   // Define columns for the AdminTable
-  const columns = [
+const columns: ColumnType<Course>[] = [
     { accessor: 'title', header: 'Title' },
     { accessor: 'slug', header: 'Slug' },
     { accessor: 'exam', header: 'Exam' },
@@ -157,7 +157,7 @@ export default function AdminCoursesPage() {
   ];
 
   // Define actions for the AdminTable
-  const actions = [
+const actions: ActionItem[] = [
     {
       label: 'Edit',
       onClick: (course: Course) => {

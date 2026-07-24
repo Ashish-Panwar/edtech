@@ -17,6 +17,7 @@ export interface Exam {
   href: string;
   gradient: string;
   color: string;
+  sortOrder?: number;
 }
 
 export interface Course {
@@ -28,6 +29,8 @@ export interface Course {
   description: string;
   highlights: string[];
   href: string;
+  isActive?: boolean;
+  price?: number | null;
 }
 
 export interface Faculty {

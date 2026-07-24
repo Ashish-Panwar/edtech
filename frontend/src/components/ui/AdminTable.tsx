@@ -1,12 +1,12 @@
 import React from 'react';
 
-interface ColumnType<T> {
+export interface ColumnType<T> {
   accessor: keyof T;
   header: string;
   format?: (value: any) => React.ReactNode;
 }
 
-interface ActionItem {
+export interface ActionItem {
   label: string;
   onClick: (item: any) => void;
   variant?: 'default' | 'destructive';
@@ -21,6 +21,13 @@ interface AdminTableProps<T> {
   selectedRows?: Set<string | number>;
   onRowSelect?: (item: T, selected: boolean) => void;
   className?: string;
+
+  total?: number;
+  page?: number;
+  limit?: number;
+  onPageChange?: (page: number) => void;
+  onLimitChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onSortChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export default function AdminTable<T>({
