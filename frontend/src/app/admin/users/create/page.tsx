@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usersApi } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
