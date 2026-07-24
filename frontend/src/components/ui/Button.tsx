@@ -20,7 +20,7 @@ const sizeClasses = {
   lg: "px-10 py-4 text-lg",
 };
 
-export function Button({
+function Button({
   children,
   variant = "primary",
   size = "md",
@@ -82,3 +82,6 @@ export function Button({
     </motion.button>
   );
 }
+
+export { Button };
+export default Button;

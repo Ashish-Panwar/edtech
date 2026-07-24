@@ -9,13 +9,13 @@ interface SelectProps
   error?: string;
 }
 
-export function Select({
+const Select = ({
   children,
   label,
   error,
   className = "",
   ...props
-}: SelectProps) {
+}: SelectProps) => {
   return (
     <div className="w-full">
       {label && (
@@ -40,4 +40,7 @@ export function Select({
       )}
     </div>
   );
-}
+};
+
+export { Select };
+export default Select;
