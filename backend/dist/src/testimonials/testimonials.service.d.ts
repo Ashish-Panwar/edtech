@@ -5,28 +5,26 @@ import { PaginationDto } from './dto/pagination.dto';
 export declare class TestimonialsService {
     private readonly prisma;
     constructor(prisma: PrismaService);
-    create(dto: CreateTestimonialDto): import("generated/prisma/models").Prisma__TestimonialClient<{
+    create(dto: CreateTestimonialDto): import(".prisma/client").Prisma.Prisma__TestimonialClient<{
+        exam: string;
         id: string;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        exam: string;
+        isActive: boolean;
         image: string | null;
         studentName: string;
         rank: string;
         year: number | null;
         story: string | null;
         quote: string | null;
-    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     findAll(paginationDto: PaginationDto): Promise<{
         data: {
+            exam: string;
             id: string;
-            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
-            exam: string;
+            isActive: boolean;
             image: string | null;
             studentName: string;
             rank: string;
@@ -38,49 +36,43 @@ export declare class TestimonialsService {
         page: number;
         limit: number;
     }>;
-    findOne(id: string): import("generated/prisma/models").Prisma__TestimonialClient<{
+    findOne(id: string): import(".prisma/client").Prisma.Prisma__TestimonialClient<{
+        exam: string;
         id: string;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        exam: string;
+        isActive: boolean;
         image: string | null;
         studentName: string;
         rank: string;
         year: number | null;
         story: string | null;
         quote: string | null;
-    } | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
-    update(id: string, dto: UpdateTestimonialDto): import("generated/prisma/models").Prisma__TestimonialClient<{
+    } | null, null, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
+    update(id: string, dto: UpdateTestimonialDto): import(".prisma/client").Prisma.Prisma__TestimonialClient<{
+        exam: string;
         id: string;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        exam: string;
+        isActive: boolean;
         image: string | null;
         studentName: string;
         rank: string;
         year: number | null;
         story: string | null;
         quote: string | null;
-    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
-    remove(id: string): import("generated/prisma/models").Prisma__TestimonialClient<{
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
+    remove(id: string): import(".prisma/client").Prisma.Prisma__TestimonialClient<{
+        exam: string;
         id: string;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        exam: string;
+        isActive: boolean;
         image: string | null;
         studentName: string;
         rank: string;
         year: number | null;
         story: string | null;
         quote: string | null;
-    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
 }

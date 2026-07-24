@@ -5,92 +5,84 @@ import { PaginationDto } from './dto/pagination.dto';
 export declare class CoursesService {
     private readonly prisma;
     constructor(prisma: PrismaService);
-    create(createCourseDto: CreateCourseDto): import("generated/prisma/models").Prisma__CourseClient<{
+    create(createCourseDto: CreateCourseDto): import(".prisma/client").Prisma.Prisma__CourseClient<{
+        exam: string;
         id: string;
-        description: string | null;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        exam: string;
+        isActive: boolean;
         title: string;
+        description: string | null;
+        image: string | null;
         slug: string;
         duration: string | null;
         mode: string | null;
         price: import("@prisma/client-runtime-utils").Decimal | null;
         highlights: string[];
-        image: string | null;
-    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     findAll(paginationDto: PaginationDto, exam?: string): Promise<{
         data: {
+            exam: string;
             id: string;
-            description: string | null;
-            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
-            exam: string;
+            isActive: boolean;
             title: string;
+            description: string | null;
+            image: string | null;
             slug: string;
             duration: string | null;
             mode: string | null;
             price: import("@prisma/client-runtime-utils").Decimal | null;
             highlights: string[];
-            image: string | null;
         }[];
         total: number;
         page: number;
         limit: number;
     }>;
-    findOne(id: string): import("generated/prisma/models").Prisma__CourseClient<{
+    findOne(id: string): import(".prisma/client").Prisma.Prisma__CourseClient<{
+        exam: string;
         id: string;
-        description: string | null;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        exam: string;
+        isActive: boolean;
         title: string;
+        description: string | null;
+        image: string | null;
         slug: string;
         duration: string | null;
         mode: string | null;
         price: import("@prisma/client-runtime-utils").Decimal | null;
         highlights: string[];
-        image: string | null;
-    } | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
-    update(id: string, updateCourseDto: UpdateCourseDto): import("generated/prisma/models").Prisma__CourseClient<{
+    } | null, null, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
+    update(id: string, updateCourseDto: UpdateCourseDto): import(".prisma/client").Prisma.Prisma__CourseClient<{
+        exam: string;
         id: string;
-        description: string | null;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        exam: string;
+        isActive: boolean;
         title: string;
+        description: string | null;
+        image: string | null;
         slug: string;
         duration: string | null;
         mode: string | null;
         price: import("@prisma/client-runtime-utils").Decimal | null;
         highlights: string[];
-        image: string | null;
-    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
-    remove(id: string): import("generated/prisma/models").Prisma__CourseClient<{
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
+    remove(id: string): import(".prisma/client").Prisma.Prisma__CourseClient<{
+        exam: string;
         id: string;
-        description: string | null;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        exam: string;
+        isActive: boolean;
         title: string;
+        description: string | null;
+        image: string | null;
         slug: string;
         duration: string | null;
         mode: string | null;
         price: import("@prisma/client-runtime-utils").Decimal | null;
         highlights: string[];
-        image: string | null;
-    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
 }

@@ -33,7 +33,11 @@ export class HeroSlidesService {
         orderBy,
       }),
       this.prisma.heroSlide.count(),
-    ]);
+    ],
+      {
+        maxWait: 10000,
+        timeout: 20000,
+      },);
 
     return {
       data,

@@ -5,28 +5,26 @@ type MulterFile = Express.Multer.File;
 export declare class TestimonialsController {
     private readonly service;
     constructor(service: TestimonialsService);
-    create(request: Request, image: MulterFile): import("generated/prisma/models").Prisma__TestimonialClient<{
+    create(request: Request, image: MulterFile): import(".prisma/client").Prisma.Prisma__TestimonialClient<{
+        exam: string;
         id: string;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        exam: string;
+        isActive: boolean;
         image: string | null;
         studentName: string;
         rank: string;
         year: number | null;
         story: string | null;
         quote: string | null;
-    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     findAll(paginationDto: PaginationDto): Promise<{
         data: {
+            exam: string;
             id: string;
-            isActive: boolean;
             createdAt: Date;
             updatedAt: Date;
-            exam: string;
+            isActive: boolean;
             image: string | null;
             studentName: string;
             rank: string;
@@ -38,50 +36,44 @@ export declare class TestimonialsController {
         page: number;
         limit: number;
     }>;
-    findOne(id: string): import("generated/prisma/models").Prisma__TestimonialClient<{
+    findOne(id: string): import(".prisma/client").Prisma.Prisma__TestimonialClient<{
+        exam: string;
         id: string;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        exam: string;
+        isActive: boolean;
         image: string | null;
         studentName: string;
         rank: string;
         year: number | null;
         story: string | null;
         quote: string | null;
-    } | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
-    update(id: string, request: Request, image: MulterFile): import("generated/prisma/models").Prisma__TestimonialClient<{
+    } | null, null, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
+    update(id: string, request: Request, image: MulterFile): import(".prisma/client").Prisma.Prisma__TestimonialClient<{
+        exam: string;
         id: string;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        exam: string;
+        isActive: boolean;
         image: string | null;
         studentName: string;
         rank: string;
         year: number | null;
         story: string | null;
         quote: string | null;
-    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
-    remove(id: string): import("generated/prisma/models").Prisma__TestimonialClient<{
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
+    remove(id: string): import(".prisma/client").Prisma.Prisma__TestimonialClient<{
+        exam: string;
         id: string;
-        isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
-        exam: string;
+        isActive: boolean;
         image: string | null;
         studentName: string;
         rank: string;
         year: number | null;
         story: string | null;
         quote: string | null;
-    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
 }
 export {};

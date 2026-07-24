@@ -33,7 +33,11 @@ export class LeadsService {
         orderBy,
       }),
       this.prisma.lead.count(),
-    ]);
+    ],
+      {
+        maxWait: 10000,
+        timeout: 20000,
+      },);
 
     return {
       data,

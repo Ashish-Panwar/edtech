@@ -5,77 +5,69 @@ import { PaginationDto } from './dto/pagination.dto';
 export declare class LeadsController {
     private readonly service;
     constructor(service: LeadsService);
-    create(dto: CreateLeadDto): import("generated/prisma/models").Prisma__LeadClient<{
+    create(dto: CreateLeadDto): import(".prisma/client").Prisma.Prisma__LeadClient<{
         id: string;
+        email: string | null;
         name: string;
         createdAt: Date;
         updatedAt: Date;
-        email: string | null;
         phone: string;
         examInterest: string;
         message: string | null;
-        source: string;
         status: string;
-    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
+        source: string;
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     findAll(paginationDto: PaginationDto): Promise<{
         data: {
             id: string;
+            email: string | null;
             name: string;
             createdAt: Date;
             updatedAt: Date;
-            email: string | null;
             phone: string;
             examInterest: string;
             message: string | null;
-            source: string;
             status: string;
+            source: string;
         }[];
         total: number;
         page: number;
         limit: number;
     }>;
-    findOne(id: string): import("generated/prisma/models").Prisma__LeadClient<{
+    findOne(id: string): import(".prisma/client").Prisma.Prisma__LeadClient<{
         id: string;
+        email: string | null;
         name: string;
         createdAt: Date;
         updatedAt: Date;
-        email: string | null;
         phone: string;
         examInterest: string;
         message: string | null;
-        source: string;
         status: string;
-    } | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
-    update(id: string, dto: UpdateLeadDto): import("generated/prisma/models").Prisma__LeadClient<{
+        source: string;
+    } | null, null, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
+    update(id: string, dto: UpdateLeadDto): import(".prisma/client").Prisma.Prisma__LeadClient<{
         id: string;
+        email: string | null;
         name: string;
         createdAt: Date;
         updatedAt: Date;
-        email: string | null;
         phone: string;
         examInterest: string;
         message: string | null;
-        source: string;
         status: string;
-    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
-    remove(id: string): import("generated/prisma/models").Prisma__LeadClient<{
+        source: string;
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
+    remove(id: string): import(".prisma/client").Prisma.Prisma__LeadClient<{
         id: string;
+        email: string | null;
         name: string;
         createdAt: Date;
         updatedAt: Date;
-        email: string | null;
         phone: string;
         examInterest: string;
         message: string | null;
-        source: string;
         status: string;
-    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
-        omit: import("generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
-    }>;
+        source: string;
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
 }

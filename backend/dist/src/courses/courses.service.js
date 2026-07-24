@@ -36,7 +36,10 @@ let CoursesService = class CoursesService {
                 orderBy: sortBy ? orderBy : undefined,
             }),
             this.prisma.course.count({ where }),
-        ]);
+        ], {
+            maxWait: 10000,
+            timeout: 20000,
+        });
         return {
             data,
             total,

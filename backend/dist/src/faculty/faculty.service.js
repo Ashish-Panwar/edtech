@@ -37,7 +37,10 @@ let FacultyService = class FacultyService {
                 orderBy,
             }),
             this.prisma.faculty.count(),
-        ]);
+        ], {
+            maxWait: 10000,
+            timeout: 20000,
+        });
         return {
             data,
             total,

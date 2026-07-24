@@ -12,10 +12,9 @@ export class ExamsService {
     return this.prisma.exam.create({ data: createExamDto });
   }
 
-  async findAll(paginationDto: PaginationDto) {
+async findAll(paginationDto: PaginationDto) {
     const { page, limit, sortBy, sortOrder } = paginationDto;
     const skip = (page - 1) * limit;
-
     const orderBy = {};
     if (sortBy) {
       // @ts-ignore
@@ -25,16 +24,20 @@ export class ExamsService {
       // @ts-ignore
       orderBy['id'] = 'asc';
     }
-
-    const [data, total] = await this.prisma.$transaction([
-      this.prisma.exam.findMany({
-        skip,
-        take: limit,
-        orderBy,
-      }),
-      this.prisma.exam.count(),
-    ]);
-
+    const [data, total] = await this.prisma.$transaction(
+      [
+        this.prisma.exam.findMany({
+          skip,
+          take: limit,
+          orderBy,
+        }),
+        this.prisma.exam.count(),
+      ],
+      {
+        maxWait: 15000,
+        timeout: 30000,
+      },
+    );
     return {
       data,
       total,

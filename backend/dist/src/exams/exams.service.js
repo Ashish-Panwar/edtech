@@ -37,7 +37,10 @@ let ExamsService = class ExamsService {
                 orderBy,
             }),
             this.prisma.exam.count(),
-        ]);
+        ], {
+            maxWait: 15000,
+            timeout: 30000,
+        });
         return {
             data,
             total,

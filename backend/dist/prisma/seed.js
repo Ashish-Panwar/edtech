@@ -33,12 +33,12 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-const client_js_1 = require("../generated/prisma/client.js");
+const client_1 = require("@prisma/client");
 const adapter_pg_1 = require("@prisma/adapter-pg");
 const bcrypt = __importStar(require("bcrypt"));
 const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)();
-const prisma = new client_js_1.PrismaClient({
+const prisma = new client_1.PrismaClient({
     adapter: new adapter_pg_1.PrismaPg({ connectionString: process.env.DATABASE_URL }),
 });
 const exams = [

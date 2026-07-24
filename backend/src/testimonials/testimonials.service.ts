@@ -22,7 +22,11 @@ export class TestimonialsService {
         take: limit,
       }),
       this.prisma.testimonial.count(),
-    ]);
+    ],
+      {
+        maxWait: 10000,
+        timeout: 20000,
+      },);
 
     return {
       data,
