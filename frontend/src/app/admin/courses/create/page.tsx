@@ -93,7 +93,7 @@ export default function CreateCoursePage() {
         mode: formData.mode,
         price: formData.price ? parseFloat(formData.price) : null,
         highlights: highlightsArray,
-        image: formData.image,
+        image: formData.image ?? undefined,
       });
 
       toast({

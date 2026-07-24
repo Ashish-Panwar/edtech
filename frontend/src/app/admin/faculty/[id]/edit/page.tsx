@@ -92,7 +92,7 @@ export default function EditFacultyPage() {
         experience: formData.experience,
         qualification: formData.qualification,
         bio: formData.bio,
-        image: formData.image,
+        image: formData.image ?? undefined,
         isActive: formData.isActive,
       });
 

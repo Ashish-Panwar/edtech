@@ -137,7 +137,7 @@ export default function EditCoursePage() {
         mode: formData.mode,
         price: formData.price ? parseFloat(formData.price) : null,
         highlights: highlightsArray,
-        image: formData.image,
+        image: formData.image ?? undefined,
         isActive: formData.isActive,
       });
 

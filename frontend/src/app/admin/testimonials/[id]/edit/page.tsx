@@ -118,7 +118,7 @@ export default function EditTestimonialPage() {
         year: formData.year ? parseInt(formData.year) : null,
         story: formData.story,
         quote: formData.quote,
-        image: formData.image,
+        image: formData.image ?? undefined,
         isActive: formData.isActive,
       });
 
