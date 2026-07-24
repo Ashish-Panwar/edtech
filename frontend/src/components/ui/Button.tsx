@@ -20,7 +20,7 @@ const sizeClasses = {
   lg: "px-10 py-4 text-lg",
 };
 
-export default function Button({
+export function Button({
   children,
   variant = "primary",
   size = "md",
